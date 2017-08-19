@@ -41,7 +41,7 @@ public class ContactsActivity extends AppCompatActivity {
                     null,
                     null,
                     null,
-                    null
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC"
             );
         } catch (Exception ex) {
             Log.e("Error in contacts", ex.getMessage());
