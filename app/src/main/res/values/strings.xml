@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MemeticaMe</string>
-    <string name="action__chats">Settings</string>
+    <string name="log__out">Log Out</string>
     <string name="fragment__chats">Fragment Chats</string>
     <string name="fragment__memeaudio">Fragment Memeaudio</string>
     <string name="fragment__gallery">Fragment Gallery</string>

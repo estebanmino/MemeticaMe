@@ -1,6 +1,7 @@
 package memeticame.memeticame;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +12,33 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
+
+
+    FirebaseAuth mAuth;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            Log.d("LOG", "logged in "+ user.getUid());
+        } else {
+            // No user is signed in
+            Log.d("LOG", "not logged in");
+            Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +72,14 @@ public class MainActivity extends AppCompatActivity {
         //set icon to memeaudio
         tabLayout.getTabAt(0).setIcon(R.mipmap.ic_memeaudio);
 
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show()
+
                 Intent intent = new Intent(MainActivity.this, ContactsActivity.class);
                 startActivity(intent);
             }
@@ -64,8 +90,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+                //startActivity(intent);
+                mAuth = FirebaseAuth.getInstance();
+                mAuth.signOut();
             }
         });
 
@@ -87,7 +115,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action__chats) {
+        if (id == R.id.log_out) {
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
             return true;
         }
 

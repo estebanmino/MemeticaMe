@@ -1,9 +1,11 @@
 package memeticame.memeticame;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +30,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
 
     EditText EditPhone, EditCode;
-    Button SubmitPhone, SubmitCode;
+    Button SubmitPhone, SubmitCode, SignOut;
     TextView TextPhone, TextCode;
 
     // [START declare_auth]
@@ -49,6 +51,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
         SubmitPhone = (Button) findViewById(R.id.submit_phone);
         EditCode = (EditText) findViewById(R.id.edit_code);
         SubmitCode = (Button) findViewById(R.id.submit_code);
+
+        SignOut = (Button) findViewById(R.id.log_out);
 
         TextPhone = (TextView) findViewById(R.id.text_phone);
         TextCode = (TextView) findViewById(R.id.text_code);
@@ -120,14 +124,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
         SubmitPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                        EditPhone.getText().toString(),
-                        60,
-                        TimeUnit.SECONDS,
-                        PhoneAuthActivity.this,
-                        mCallbacks
-                );
+                if (validatePhoneNumber(EditPhone.getText().toString())) {
+                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                            EditPhone.getText().toString(),
+                            60,
+                            TimeUnit.SECONDS,
+                            PhoneAuthActivity.this,
+                            mCallbacks
+                    );
+                }
             }
         });
 
@@ -155,6 +160,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             Toast.makeText(PhoneAuthActivity.this,"Verification done",Toast.LENGTH_LONG).show();
 
                             FirebaseUser user = task.getResult().getUser();
+                            Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
+                            startActivity(intent);
                             // ...
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -167,5 +174,14 @@ public class PhoneAuthActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private boolean validatePhoneNumber(String phoneNumber) {
+        return !TextUtils.isEmpty(phoneNumber);
+    }
+
+    private void signOut() {
+        mAuth.signOut();
+        //updateUI(STATE_INITIALIZED);
     }
 }
