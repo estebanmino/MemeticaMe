@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ContactsActivity" />
-        <activity android:name=".PhoneAuthActivity"></activity>
+        <activity android:name=".PhoneAuthActivity" />
     </application>
 
 </manifest>

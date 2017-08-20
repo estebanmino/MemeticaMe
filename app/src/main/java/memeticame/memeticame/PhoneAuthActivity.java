@@ -1,12 +1,10 @@
 package memeticame.memeticame;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -159,7 +157,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             //Log.d(TAG, "signInWithCredential:success");
                             Toast.makeText(PhoneAuthActivity.this,"Verification done",Toast.LENGTH_LONG).show();
 
-                            FirebaseUser user = task.getResult().getUser();
+                            @SuppressWarnings("UnusedAssignment") FirebaseUser user = task.getResult().getUser();
                             Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
                             startActivity(intent);
                             // ...

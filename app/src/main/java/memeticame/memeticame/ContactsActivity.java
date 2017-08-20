@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ContactsActivity extends AppCompatActivity {
 
@@ -75,6 +76,7 @@ public class ContactsActivity extends AppCompatActivity {
             }
 
         }
+        assert cursor_contacts != null;
         cursor_contacts.close();
         //Toast.makeText(this, "getContact" , Toast.LENGTH_SHORT).show();
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
@@ -136,7 +138,7 @@ public class ContactsActivity extends AppCompatActivity {
         switch (requestCode) {
             case 0: {
                 // If request is cancelled, the result arrays are empty.
-                Log.d("grantResult", grantResults.toString());
+                Log.d("grantResult", Arrays.toString(grantResults));
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
