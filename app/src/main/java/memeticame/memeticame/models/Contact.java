@@ -1,4 +1,4 @@
-package memeticame.memeticame;
+package memeticame.memeticame.models;
 
 /**
  * Created by efmino on 18-08-17.
@@ -7,10 +7,10 @@ package memeticame.memeticame;
 public class Contact {
 
     private String contact_name = "";
-    //private String contact_phone = "";
-    private int contact_id = 0;
+    private String contact_phone = "";
+    private String contact_id = "0";
 
-    public int getContact_id() {
+    public String getContact_id() {
         return contact_id;
     }
 
@@ -18,11 +18,11 @@ public class Contact {
         return contact_name;
     }
 
-    /*public String getContact_phone() {
+    public String getContact_phone() {
         return contact_phone;
-    }*/
+    }
 
-    public void setContact_id(int contact_id) {
+    public void setContact_id(String contact_id) {
         this.contact_id = contact_id;
     }
 
@@ -30,8 +30,8 @@ public class Contact {
         this.contact_name = contact_name;
     }
 
-    /*public void setContact_phone(String contact_phone) {
+    public void setContact_phone(String contact_phone) {
         this.contact_phone = contact_phone;
-    }*/
+    }
 
 }

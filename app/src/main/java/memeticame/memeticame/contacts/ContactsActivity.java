@@ -1,4 +1,4 @@
-package memeticame.memeticame;
+package memeticame.memeticame.contacts;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -20,14 +20,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import memeticame.memeticame.MainActivity;
+import memeticame.memeticame.R;
+import memeticame.memeticame.models.Contact;
+
 public class ContactsActivity extends AppCompatActivity {
 
     private ContactsAdapter contactsAdapter;
 
     public void getContacts() {
         ArrayList<Contact> array_list_contacts = new ArrayList<Contact>();
-
-        Log.d("print", "getContacts");
 
         Cursor cursor_contacts = null;
         ContentResolver contentResolver = getContentResolver();
@@ -37,13 +39,12 @@ public class ContactsActivity extends AppCompatActivity {
                     null,
                     null,
                     null,
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC"
+                    ContactsContract.Contacts.DISPLAY_NAME+" ASC"
             );
         } catch (Exception ex) {
             Log.e("Error in contacts", ex.getMessage());
         }
         if (cursor_contacts != null) {
-            Log.d("getcount", "ooo " +  cursor_contacts.getCount());
 
             if (cursor_contacts.getCount() > 0) {
 
@@ -53,24 +54,23 @@ public class ContactsActivity extends AppCompatActivity {
                     String contact_name = cursor_contacts.getString(cursor_contacts.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
                     contact.setContact_name(contact_name);
-                    //contact.setContact_id(contact_id);
-                /*TO PHONE
-                if (Integer.parseInt(cursor_contacts.getString(cursor_contacts.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-                {
+                    contact.setContact_id(contact_id);
 
-                    Cursor cursor_phones = getContentResolver().query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contact_id,
-                            null,
-                            null
-                    );
-                    while (cursor_phones.moveToNext()) {
-                        String contact_phone = cursor_phones.getString(cursor_phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        contact.setContact_phone(contact_phone);
+                    if (Integer.parseInt(cursor_contacts.getString(cursor_contacts.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
+                    {
+                        Cursor cursor_phones = getContentResolver().query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contact_id,
+                                null,
+                                null
+                        );
+                        if (cursor_phones.moveToFirst()) {
+                            String contact_phone = cursor_phones.getString(cursor_phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            contact.setContact_phone(contact_phone);
+                        }
+                        cursor_phones.close();
                     }
-                    cursor_phones.close();
-                }*/
                     array_list_contacts.add(contact);
                 }
             }
@@ -82,7 +82,6 @@ public class ContactsActivity extends AppCompatActivity {
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
         //Log.d("this is my array", "arr: " + array_list_names);
 
-
         //adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,array_list_names);
         contactsAdapter = new ContactsAdapter(this, array_list_contacts);
         contactsListView.setAdapter(contactsAdapter);
@@ -93,7 +92,7 @@ public class ContactsActivity extends AppCompatActivity {
                 try {
                     Contact contact = (Contact)contactsAdapter.getItem(position);
                     Log.e("contact", "-"+contact.getContact_name());
-                    Toast.makeText(getBaseContext(), "Name selected: "+ contact.getContact_name(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Name selected: "+ contact.getContact_name() + "\nNumber: " + contact.getContact_phone(), Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

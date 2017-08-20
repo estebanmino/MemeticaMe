@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/contacts_toolbar"
 
-    tools:context="memeticame.memeticame.ContactsActivity">
+    tools:context="memeticame.memeticame.contacts.ContactsActivity">
 
     <include layout="@layout/content_contacts" />
 

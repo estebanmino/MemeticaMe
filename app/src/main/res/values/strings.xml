@@ -5,4 +5,6 @@
     <string name="fragment__memeaudio">Fragment Memeaudio</string>
     <string name="fragment__gallery">Fragment Gallery</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="title_activity_splash"></string>
 </resources>

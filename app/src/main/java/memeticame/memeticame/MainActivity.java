@@ -19,6 +19,9 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import memeticame.memeticame.contacts.ContactsActivity;
+import memeticame.memeticame.users.PhoneAuthActivity;
+
 public class MainActivity extends AppCompatActivity {
 
 

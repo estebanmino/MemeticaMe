@@ -1,4 +1,4 @@
-package memeticame.memeticame;
+package memeticame.memeticame.contacts;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import memeticame.memeticame.R;
+import memeticame.memeticame.models.Contact;
 
 /**
  * Created by efmino on 18-08-17.

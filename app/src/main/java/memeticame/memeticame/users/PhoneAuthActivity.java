@@ -1,4 +1,4 @@
-package memeticame.memeticame;
+package memeticame.memeticame.users;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -23,6 +23,9 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
+
+import memeticame.memeticame.MainActivity;
+import memeticame.memeticame.R;
 
 public class PhoneAuthActivity extends AppCompatActivity {
 
