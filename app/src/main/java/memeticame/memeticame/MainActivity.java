@@ -59,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton fab_log = (FloatingActionButton) findViewById(R.id.fab_log);
+        fab_log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
 

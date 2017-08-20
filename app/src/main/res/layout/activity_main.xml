@@ -55,4 +55,20 @@
         app:srcCompat="@drawable/ic_person_black"
         />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/colorPrimary"
+        app:elevation="6dp"
+        app:borderWidth="0dp"
+        android:clickable="true"
+        app:fabSize="normal"
+        />
+
 </android.support.design.widget.CoordinatorLayout>
