@@ -170,9 +170,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             //myRef.setValue(Uid);
 
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myUserRef = database.getReference("users");
+                            DatabaseReference myUser = database.getReference("users");
                             String phoneNumber = user.getPhoneNumber();
-                            myUserRef.setValue(phoneNumber);
+                            myUser.setValue(phoneNumber);
+
+                            DatabaseReference myUserReference = database.getReference("users/"+phoneNumber+"/contact_name");
+                            myUserReference.setValue("Nombre");
+
+                            DatabaseReference myUserPhoneReference = database.getReference("users/"+phoneNumber+"/contact_phone");
+                            myUserPhoneReference.setValue(phoneNumber);
 
                             startActivity(intent);
                             // ...

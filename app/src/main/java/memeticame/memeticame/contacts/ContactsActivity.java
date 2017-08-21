@@ -17,6 +17,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,10 +33,13 @@ import memeticame.memeticame.models.Contact;
 public class ContactsActivity extends AppCompatActivity {
 
     private ContactsAdapter contactsAdapter;
+    private DatabaseReference usersDatabase;
+    private ArrayList<Contact> array_list_contacts;
+    public ArrayList<String> number_list = new ArrayList<String>();
 
 
     public void getContacts() {
-        ArrayList<Contact> array_list_contacts = new ArrayList<Contact>();
+        array_list_contacts = new ArrayList<Contact>();
 
         Cursor cursor_contacts = null;
         ContentResolver contentResolver = getContentResolver();
@@ -69,13 +78,16 @@ public class ContactsActivity extends AppCompatActivity {
                         if (cursor_phones.moveToFirst()) {
                             String contact_phone = cursor_phones.getString(cursor_phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             contact.setContact_phone(contact_phone);
+
                         }
                         cursor_phones.close();
                     }
-                    array_list_contacts.add(contact);
+
+                    if (number_list.contains(contact.getContact_phone().replaceAll("\\s+","").replaceAll("-",""))) {
+                        array_list_contacts.add(contact);
+                    }
                 }
             }
-
         }
         assert cursor_contacts != null;
         cursor_contacts.close();
@@ -128,8 +140,31 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
 
+        usersDatabase = FirebaseDatabase.getInstance().getReference("users");
+        usersDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Contact contact = userSnapshot.getValue(Contact.class);
+                    //array_list_contacts.add(contact);
+                    number_list.add(contact.getContact_phone().toString());
+                }
+                showContacts();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        showContacts();
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     @Override
@@ -158,7 +193,6 @@ public class ContactsActivity extends AppCompatActivity {
             // permissions this app might request
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
