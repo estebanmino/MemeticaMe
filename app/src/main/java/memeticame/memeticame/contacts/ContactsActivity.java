@@ -28,6 +28,7 @@ public class ContactsActivity extends AppCompatActivity {
 
     private ContactsAdapter contactsAdapter;
 
+
     public void getContacts() {
         ArrayList<Contact> array_list_contacts = new ArrayList<Contact>();
 
@@ -89,13 +90,13 @@ public class ContactsActivity extends AppCompatActivity {
         contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                try {
-                    Contact contact = (Contact)contactsAdapter.getItem(position);
-                    Log.e("contact", "-"+contact.getContact_name());
-                    Toast.makeText(getBaseContext(), "Name selected: "+ contact.getContact_name() + "\nNumber: " + contact.getContact_phone(), Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                Contact contact = (Contact)contactsAdapter.getItem(position);
+                Log.e("contact", "-"+contact.getContact_name());
+                Toast.makeText(getBaseContext(), "Name selected: "+ contact.getContact_name() + "\nNumber: " + contact.getContact_phone(), Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             }
         });
     }

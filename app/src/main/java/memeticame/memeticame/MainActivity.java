@@ -18,6 +18,8 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import memeticame.memeticame.contacts.ContactsActivity;
 import memeticame.memeticame.users.PhoneAuthActivity;
@@ -91,13 +93,14 @@ public class MainActivity extends AppCompatActivity {
         fab_log.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show();
-                //Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
-                //startActivity(intent);
-                mAuth = FirebaseAuth.getInstance();
-                mAuth.signOut();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("message");
+
+            myRef.setValue("Hello, World!");
             }
         });
+
+
 
     }
 

@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -160,8 +162,18 @@ public class PhoneAuthActivity extends AppCompatActivity {
                             //Log.d(TAG, "signInWithCredential:success");
                             Toast.makeText(PhoneAuthActivity.this,"Verification done",Toast.LENGTH_LONG).show();
 
-                            @SuppressWarnings("UnusedAssignment") FirebaseUser user = task.getResult().getUser();
+                            FirebaseUser user = task.getResult().getUser();
                             Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
+
+                            //DatabaseReference myRef = database.getReference("users");
+                            //String Uid = user.getUid();
+                            //myRef.setValue(Uid);
+
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myUserRef = database.getReference("users");
+                            String phoneNumber = user.getPhoneNumber();
+                            myUserRef.setValue(phoneNumber);
+
                             startActivity(intent);
                             // ...
                         } else {
