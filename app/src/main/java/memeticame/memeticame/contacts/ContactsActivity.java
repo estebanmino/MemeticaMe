@@ -36,6 +36,7 @@ public class ContactsActivity extends AppCompatActivity {
     private DatabaseReference usersDatabase;
     private ArrayList<Contact> array_list_contacts;
     public ArrayList<String> number_list = new ArrayList<String>();
+    public ArrayList<String> added_number_list = new ArrayList<String>();
 
 
     public void getContacts() {
@@ -45,7 +46,7 @@ public class ContactsActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         try {
             cursor_contacts = contentResolver.query(
-                    ContactsContract.Contacts.CONTENT_URI,
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
                     null,
                     null,
@@ -60,42 +61,30 @@ public class ContactsActivity extends AppCompatActivity {
 
                 while (cursor_contacts.moveToNext()) {
                     Contact contact = new Contact();
-                    String contact_id = cursor_contacts.getString(cursor_contacts.getColumnIndex(ContactsContract.Contacts._ID));
-                    String contact_name = cursor_contacts.getString(cursor_contacts.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
+                    String contact_id = cursor_contacts.getString(cursor_contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone._ID));
+                    String contact_name = cursor_contacts.getString(cursor_contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    String contact_phone = cursor_contacts.getString(cursor_contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER));
                     contact.setContact_name(contact_name);
                     contact.setContact_id(contact_id);
+                    contact.setContact_phone(contact_phone);
 
-                    if (Integer.parseInt(cursor_contacts.getString(cursor_contacts.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-                    {
-                        Cursor cursor_phones = getContentResolver().query(
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contact_id,
-                                null,
-                                null
-                        );
-                        if (cursor_phones.moveToFirst()) {
-                            String contact_phone = cursor_phones.getString(cursor_phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            contact.setContact_phone(contact_phone);
-
-                        }
-                        cursor_phones.close();
-                    }
-
-                    if (number_list.contains(contact.getContact_phone().replaceAll("\\s+","").replaceAll("-",""))) {
+                    String phone_number = contact.getContact_phone().replaceAll(
+                            "\\s+","").replaceAll("-","");
+                    if (number_list.contains(phone_number) &&
+                            !added_number_list.contains(phone_number)) {
                         array_list_contacts.add(contact);
+                        added_number_list.add(phone_number);
                     }
                 }
             }
         }
         assert cursor_contacts != null;
         cursor_contacts.close();
-        //Toast.makeText(this, "getContact" , Toast.LENGTH_SHORT).show();
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
-        //Log.d("this is my array", "arr: " + array_list_names);
 
-        //adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,array_list_names);
         contactsAdapter = new ContactsAdapter(this, array_list_contacts);
         contactsListView.setAdapter(contactsAdapter);
 
@@ -146,7 +135,6 @@ public class ContactsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
-                    //array_list_contacts.add(contact);
                     number_list.add(contact.getContact_phone().toString());
                 }
                 showContacts();
