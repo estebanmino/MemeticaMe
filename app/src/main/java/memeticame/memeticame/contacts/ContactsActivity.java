@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,7 @@ public class ContactsActivity extends AppCompatActivity {
     private ArrayList<Contact> array_list_contacts;
     public ArrayList<String> number_list = new ArrayList<String>();
     public ArrayList<String> added_number_list = new ArrayList<String>();
+    private FirebaseAuth mAuth;
 
 
     public void getContacts() {
@@ -67,12 +69,12 @@ public class ContactsActivity extends AppCompatActivity {
                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                     String contact_phone = cursor_contacts.getString(cursor_contacts.getColumnIndex(
                             ContactsContract.CommonDataKinds.Phone.NUMBER));
+
                     contact.setContact_name(contact_name);
                     contact.setContact_id(contact_id);
                     contact.setContact_phone(contact_phone);
 
-                    String phone_number = contact.getContact_phone().replaceAll(
-                            "\\s+","").replaceAll("-","");
+                    String phone_number = contact.getContact_phone().replaceAll("-","");
                     if (number_list.contains(phone_number) &&
                             !added_number_list.contains(phone_number)) {
                         array_list_contacts.add(contact);
@@ -85,21 +87,8 @@ public class ContactsActivity extends AppCompatActivity {
         cursor_contacts.close();
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
 
-        contactsAdapter = new ContactsAdapter(this, array_list_contacts);
+        contactsAdapter = new ContactsAdapter(this, array_list_contacts, mAuth);
         contactsListView.setAdapter(contactsAdapter);
-
-        contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-            try {
-                Contact contact = (Contact)contactsAdapter.getItem(position);
-                Log.e("contact", "-"+contact.getContact_name());
-                Toast.makeText(getBaseContext(), "Name selected: "+ contact.getContact_name() + "\nNumber: " + contact.getContact_phone(), Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            }
-        });
     }
 
     private void showContacts() {
@@ -144,6 +133,8 @@ public class ContactsActivity extends AppCompatActivity {
 
             }
         });
+        mAuth = FirebaseAuth.getInstance();
+
 
 
     }
