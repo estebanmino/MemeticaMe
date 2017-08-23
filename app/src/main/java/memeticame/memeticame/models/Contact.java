@@ -1,6 +1,7 @@
 package memeticame.memeticame.models;
 
 import android.util.ArrayMap;
+import android.util.Log;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

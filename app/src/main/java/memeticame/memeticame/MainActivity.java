@@ -1,5 +1,6 @@
 package memeticame.memeticame;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     FirebaseAuth mAuth;
+    public static Context contextOfApplication;
+
+    //context for fragments
+    public static Context getContextOfApplication()
+    {
+        return contextOfApplication;
+    }
 
     @Override
     protected void onStart() {
@@ -47,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        contextOfApplication = getApplicationContext();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
