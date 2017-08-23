@@ -1,12 +1,6 @@
 package memeticame.memeticame.models;
 
-import android.util.ArrayMap;
-import android.util.Log;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by efmino on 18-08-17.
@@ -14,39 +8,37 @@ import java.util.Map;
 
 public class Contact {
 
-    private String contact_name = "";
-    private String contact_phone = "";
-    private String contact_id = "0";
+    private String NAME = "";
+    private String PHONE = "";
+    private String ID = "0";
     private HashMap<String, Boolean> contacts = null;
 
-    public String getContact_id() {
-        return contact_id;
+    public String getID() {
+        return ID;
     }
 
-    public String getContact_name() {
-        return contact_name;
+    public String getName() {
+        return NAME;
     }
 
-    public String getContact_phone() {
-        return contact_phone;
+    public String getPhone() {
+        return PHONE;
     }
 
     public HashMap<String, Boolean> getContacts() {
         return contacts;
     }
 
-    public void setContact_id(String contact_id) {
-        this.contact_id = contact_id;
+    public void setId(String CONTACT_ID) {
+        this.ID = CONTACT_ID;
     }
 
-    public void setContact_name(String contact_name) {
-        this.contact_name = contact_name;
+    public void setName(String CONTACT_NAME) {
+        this.NAME = CONTACT_NAME;
     }
 
-    public void setContact_phone(String contact_phone) {
-        this.contact_phone = contact_phone;
+    public void setPhone(String CONTACT_PHONE) {
+        this.PHONE = CONTACT_PHONE;
     }
-
-
 
 }

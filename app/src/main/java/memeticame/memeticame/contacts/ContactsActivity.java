@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import memeticame.memeticame.MainActivity;
 import memeticame.memeticame.R;
@@ -35,14 +32,14 @@ public class ContactsActivity extends AppCompatActivity {
 
     private ContactsAdapter contactsAdapter;
     private DatabaseReference usersDatabase;
-    private ArrayList<Contact> array_list_contacts;
-    public ArrayList<String> number_list = new ArrayList<String>();
-    public ArrayList<String> added_number_list = new ArrayList<String>();
+    private ArrayList<Contact> arrayListContacts;
     private FirebaseAuth mAuth;
+    public ArrayList<String> numberList = new ArrayList<String>();
+    public ArrayList<String> addedNumberList = new ArrayList<String>();
 
 
     public void getContacts() {
-        array_list_contacts = new ArrayList<Contact>();
+        arrayListContacts = new ArrayList<Contact>();
 
         Cursor cursor_contacts = null;
         ContentResolver contentResolver = getContentResolver();
@@ -70,15 +67,15 @@ public class ContactsActivity extends AppCompatActivity {
                     String contact_phone = cursor_contacts.getString(cursor_contacts.getColumnIndex(
                             ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                    contact.setContact_name(contact_name);
-                    contact.setContact_id(contact_id);
-                    contact.setContact_phone(contact_phone);
+                    contact.setName(contact_name);
+                    contact.setId(contact_id);
+                    contact.setPhone(contact_phone);
 
-                    String phone_number = contact.getContact_phone().replaceAll("-","");
-                    if (number_list.contains(phone_number) &&
-                            !added_number_list.contains(phone_number)) {
-                        array_list_contacts.add(contact);
-                        added_number_list.add(phone_number);
+                    String phone_number = contact.getPhone().replaceAll("-","");
+                    if (numberList.contains(phone_number) &&
+                            !addedNumberList.contains(phone_number)) {
+                        arrayListContacts.add(contact);
+                        addedNumberList.add(phone_number);
                     }
                 }
             }
@@ -87,17 +84,15 @@ public class ContactsActivity extends AppCompatActivity {
         cursor_contacts.close();
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
 
-        contactsAdapter = new ContactsAdapter(this, array_list_contacts, mAuth);
+        contactsAdapter = new ContactsAdapter(this, arrayListContacts, mAuth);
         contactsListView.setAdapter(contactsAdapter);
     }
 
     private void showContacts() {
         // Check the SDK version and whether the permission is already granted or not.
         if (ContextCompat.checkSelfPermission(ContactsActivity.this,
-                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-        {
+                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 0);
-            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
             getContacts();
         }
@@ -117,21 +112,18 @@ public class ContactsActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add contacts");
         }
 
-
         usersDatabase = FirebaseDatabase.getInstance().getReference("users");
         usersDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
-                    number_list.add(contact.getContact_phone().toString());
+                    numberList.add(contact.getPhone().toString());
                 }
                 showContacts();
             }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
         mAuth = FirebaseAuth.getInstance();
 
@@ -142,8 +134,6 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
@@ -152,7 +142,6 @@ public class ContactsActivity extends AppCompatActivity {
         switch (requestCode) {
             case 0: {
                 // If request is cancelled, the result arrays are empty.
-                Log.d("grantResult", Arrays.toString(grantResults));
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -175,7 +164,6 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == android.R.id.home) {
             finish();
         }

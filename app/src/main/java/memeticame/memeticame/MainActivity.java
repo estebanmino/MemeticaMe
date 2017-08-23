@@ -41,10 +41,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
-            Log.d("LOG", "logged in "+ user.getUid());
         } else {
             // No user is signed in
-            Log.d("LOG", "not logged in");
             Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
             startActivity(intent);
         }
@@ -71,14 +69,11 @@ public class MainActivity extends AppCompatActivity {
         //set icon to memeaudio
         tabLayout.getTabAt(0).setIcon(R.mipmap.ic_memeaudio);
 
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show()
-
                 Intent intent = new Intent(MainActivity.this, ContactsActivity.class);
                 startActivity(intent);
             }
@@ -88,10 +83,8 @@ public class MainActivity extends AppCompatActivity {
         fab_log.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
-
     }
 
 
@@ -118,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

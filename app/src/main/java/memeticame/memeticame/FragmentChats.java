@@ -4,11 +4,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,14 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import memeticame.memeticame.contacts.ContactsAdapter;
 import memeticame.memeticame.models.Contact;
 
 /**
@@ -40,15 +35,16 @@ import memeticame.memeticame.models.Contact;
 
 public class FragmentChats extends Fragment {
 
-    private ArrayList<String> my_chats_list = new ArrayList<String>();
-    private ArrayList<String> chats_list = new ArrayList<String>();
-    private List<String> my_phone_contacts_numbers = new ArrayList<String>();
-    private List<String> my_phone_contacts_names = new ArrayList<String>();
-    private ArrayList<Contact> my_phone_contacts;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private ArrayList<String> myChatsList = new ArrayList<String>();
+    private ArrayList<String> chatsList = new ArrayList<String>();
+    private List<String> myPhoneContactsNumbers = new ArrayList<String>();
+    private List<String> myPhoneContactsNames = new ArrayList<String>();
+
     private DatabaseReference usersDatabase;
     private ArrayAdapter arrayAdapter;
+    private ArrayList<Contact> myPhoneContacts;
 
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -61,12 +57,12 @@ public class FragmentChats extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        my_phone_contacts = getContacts();
-        for (Contact contact: my_phone_contacts) {
-            my_phone_contacts_numbers.add(contact.getContact_phone());
-            my_phone_contacts_names.add(contact.getContact_name());
+        myPhoneContacts = getContacts();
+        for (Contact contact: myPhoneContacts) {
+            myPhoneContactsNumbers.add(contact.getPhone());
+            myPhoneContactsNames.add(contact.getName());
         }
-        arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, chats_list);
+        arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, chatsList);
         return inflater.inflate(R.layout.fragment_chats, container, false);
     }
 
@@ -81,26 +77,26 @@ public class FragmentChats extends Fragment {
         usersDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                my_chats_list.clear();
-                chats_list.clear();
+                myChatsList.clear();
+                chatsList.clear();
 
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
                     HashMap<String,Boolean> MyContactsMap = contact.getContacts();
 
-                    if(currentUser.getPhoneNumber().equals(contact.getContact_phone())
+                    if(currentUser.getPhoneNumber().equals(contact.getPhone())
                             && MyContactsMap != null) {
 
                         for (Map.Entry<String, Boolean> entry : MyContactsMap.entrySet()) {
-                            my_chats_list.add(entry.getKey().toString());
+                            myChatsList.add(entry.getKey().toString());
                         }
-                        for (String chat_number: my_chats_list) {
-                            if (my_phone_contacts_numbers.contains(chat_number)) {
-                                int index = my_phone_contacts_numbers.indexOf(chat_number);
-                                chats_list.add(my_phone_contacts_names.get(index));
+                        for (String chat_number: myChatsList) {
+                            if (myPhoneContactsNumbers.contains(chat_number)) {
+                                int index = myPhoneContactsNumbers.indexOf(chat_number);
+                                chatsList.add(myPhoneContactsNames.get(index));
                             }
                             else {
-                                chats_list.add("Desconocido");
+                                chatsList.add("Desconocido");
 
                             }
                         }
@@ -147,8 +143,8 @@ public class FragmentChats extends Fragment {
                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                     String contact_phone = cursor_contacts.getString(cursor_contacts.getColumnIndex(
                             ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    contact.setContact_name(contact_name);
-                    contact.setContact_phone(contact_phone.replace(" ",",").replace("-",""));
+                    contact.setName(contact_name);
+                    contact.setPhone(contact_phone.replace(" ",",").replace("-",""));
                     array_list_contacts.add(contact);
                 }
             }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,30 +55,32 @@ public class ContactsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater =
+                    (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.contact_view,null);
         }
 
-        final TextView contact_name = (TextView)convertView.findViewById(R.id.contact_name);
-        TextView contact_phone = (TextView)convertView.findViewById(R.id.contact_phone);
+        final TextView contactName = convertView.findViewById(R.id.contact_name);
+        final TextView contactPhone = convertView.findViewById(R.id.contact_phone);
 
-        final String element_name = arrayList.get(position).getContact_name();
-        final String element_phone = arrayList.get(position).getContact_phone();
+        final String elementName = arrayList.get(position).getName();
+        final String elementPhone = arrayList.get(position).getPhone();
 
-        contact_name.setText(element_name);
-        contact_phone.setText(element_phone);
+        contactName.setText(elementName);
+        contactPhone.setText(elementPhone);
 
         FloatingActionButton addBtn = (FloatingActionButton)convertView.findViewById(R.id.add_button);
 
         addBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
                 //notifyDataSetChanged();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                Toast.makeText(context, "Name selected: "+ element_name + "\nPhone: " + element_phone + " "+ currentUser.getPhoneNumber(), Toast.LENGTH_LONG).show();
-                DatabaseReference myUserPhoneReference = database.getReference("users/"+currentUser.getPhoneNumber()+"/contacts/"+element_phone);
+                Toast.makeText(context, "Name selected: "+ elementName + "\nPhone: " +
+                        elementPhone + " "+ currentUser.getPhoneNumber(), Toast.LENGTH_LONG).show();
+                DatabaseReference myUserPhoneReference =
+                        database.getReference("users/"+currentUser.getPhoneNumber()+"/contacts/"+elementPhone);
                 myUserPhoneReference.setValue(true);
 
             }
