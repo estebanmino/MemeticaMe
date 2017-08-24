@@ -2,6 +2,7 @@ package memeticame.memeticame;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -43,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
             // User is signed in
         } else {
             // No user is signed in
-            Intent intent = new Intent(MainActivity.this, PhoneAuthActivity.class);
-            startActivity(intent);
+            startActivity(PhoneAuthActivity.getIntent(MainActivity.this));
         }
     }
 
@@ -73,9 +73,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), "To contacts ", Toast.LENGTH_LONG).show()
-                Intent intent = new Intent(MainActivity.this, ContactsActivity.class);
-                startActivity(intent);
+            startActivity(ContactsActivity.getIntent(MainActivity.this));
             }
         });
 

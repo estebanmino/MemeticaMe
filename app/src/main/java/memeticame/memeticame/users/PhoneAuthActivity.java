@@ -1,5 +1,6 @@
 package memeticame.memeticame.users;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import memeticame.memeticame.MainActivity;
 import memeticame.memeticame.R;
+import memeticame.memeticame.contacts.ContactsActivity;
 
 public class PhoneAuthActivity extends AppCompatActivity {
 
@@ -44,6 +46,12 @@ public class PhoneAuthActivity extends AppCompatActivity {
     String mVerificationId;
     PhoneAuthProvider.ForceResendingToken mResendToken;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
+
+    public static Intent getIntent(Context context) {
+        Intent intent = new Intent(context,PhoneAuthActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

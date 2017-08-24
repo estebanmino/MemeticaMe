@@ -2,6 +2,7 @@ package memeticame.memeticame.contacts;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -37,6 +38,11 @@ public class ContactsActivity extends AppCompatActivity {
     public ArrayList<String> numberList = new ArrayList<String>();
     public ArrayList<String> addedNumberList = new ArrayList<String>();
 
+
+    public static Intent getIntent(Context context) {
+        Intent intent = new Intent(context,ContactsActivity.class);
+        return intent;
+    }
 
     public void getContacts() {
         arrayListContacts = new ArrayList<Contact>();

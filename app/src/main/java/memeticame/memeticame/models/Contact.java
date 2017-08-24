@@ -8,37 +8,37 @@ import java.util.HashMap;
 
 public class Contact {
 
-    private String NAME = "";
-    private String PHONE = "";
-    private String ID = "0";
-    private HashMap<String, Boolean> contacts = null;
+    private String name;
+    private String phone;
+    private String id;
+    private HashMap<String, Boolean> contacts;
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public String getName() {
-        return NAME;
+        return name;
     }
 
     public String getPhone() {
-        return PHONE;
+        return phone;
     }
 
     public HashMap<String, Boolean> getContacts() {
         return contacts;
     }
 
-    public void setId(String CONTACT_ID) {
-        this.ID = CONTACT_ID;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setName(String CONTACT_NAME) {
-        this.NAME = CONTACT_NAME;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setPhone(String CONTACT_PHONE) {
-        this.PHONE = CONTACT_PHONE;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
 }
