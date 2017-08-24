@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     public static Context contextOfApplication;
 
-    //context for fragments
+    //context for fragmentse
     public static Context getContextOfApplication()
     {
         return contextOfApplication;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            startActivity(ContactsActivity.getIntent(MainActivity.this));
+                startActivity(ContactsActivity.getIntent(MainActivity.this));
             }
         });
 

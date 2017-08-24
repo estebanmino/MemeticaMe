@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,6 +39,24 @@ public class ContactsActivity extends AppCompatActivity {
     public ArrayList<String> numberList = new ArrayList<String>();
     public ArrayList<String> addedNumberList = new ArrayList<String>();
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_contacts, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        else if (item.getItemId() == R.id.add_contacts) {
+            startActivity(AddNumberActivity.getIntent(ContactsActivity.this));
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context,ContactsActivity.class);
@@ -133,8 +152,6 @@ public class ContactsActivity extends AppCompatActivity {
         });
         mAuth = FirebaseAuth.getInstance();
 
-
-
     }
 
     @Override
@@ -168,11 +185,4 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
