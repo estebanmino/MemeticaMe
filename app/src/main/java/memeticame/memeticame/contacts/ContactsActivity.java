@@ -1,43 +1,46 @@
 package memeticame.memeticame.contacts;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import memeticame.memeticame.MainActivity;
 import memeticame.memeticame.R;
 import memeticame.memeticame.models.Contact;
+import memeticame.memeticame.models.Database;
+import memeticame.memeticame.models.Phone;
 
 public class ContactsActivity extends AppCompatActivity {
 
     private ContactsAdapter contactsAdapter;
     private DatabaseReference usersDatabase;
-    private ArrayList<Contact> arrayListContacts;
-    private FirebaseAuth mAuth;
+    private ArrayList<Contact> myPhoneContacts;
+    private List<String> myPhoneContactsNumbers = new ArrayList<String>();
+    private List<String> myPhoneContactsNames = new ArrayList<String>();
+
     public ArrayList<String> numberList = new ArrayList<String>();
     public ArrayList<String> addedNumberList = new ArrayList<String>();
+
+    private Database firebaseDatabase = new Database();
+    private Phone mPhone = new Phone();
+    private ArrayList<Contact> myPhoneContactsInDatabase = new ArrayList<Contact>();
 
 
     @Override
@@ -64,52 +67,22 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     public void getContacts() {
-        arrayListContacts = new ArrayList<Contact>();
-
-        Cursor cursor_contacts = null;
-        ContentResolver contentResolver = getContentResolver();
-        try {
-            cursor_contacts = contentResolver.query(
-                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                    null,
-                    null,
-                    null,
-                    ContactsContract.Contacts.DISPLAY_NAME+" ASC"
-            );
-        } catch (Exception ex) {
-            Log.e("Error in contacts", ex.getMessage());
+        myPhoneContacts = mPhone.getContacts();
+        for (Contact contact: myPhoneContacts) {
+            myPhoneContactsNumbers.add(contact.getPhone());
+            myPhoneContactsNames.add(contact.getName());
         }
-        if (cursor_contacts != null) {
 
-            if (cursor_contacts.getCount() > 0) {
-
-                while (cursor_contacts.moveToNext()) {
-                    Contact contact = new Contact();
-                    String contact_id = cursor_contacts.getString(cursor_contacts.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone._ID));
-                    String contact_name = cursor_contacts.getString(cursor_contacts.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String contact_phone = cursor_contacts.getString(cursor_contacts.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                    contact.setName(contact_name);
-                    contact.setId(contact_id);
-                    contact.setPhone(contact_phone);
-
-                    String phone_number = contact.getPhone().replaceAll("-","");
-                    if (numberList.contains(phone_number) &&
-                            !addedNumberList.contains(phone_number)) {
-                        arrayListContacts.add(contact);
-                        addedNumberList.add(phone_number);
-                    }
-                }
+        for (String contact_number: numberList) {
+            if (myPhoneContactsNumbers.contains(contact_number)) {
+                int index = myPhoneContactsNumbers.indexOf(contact_number);
+                myPhoneContactsInDatabase.add(myPhoneContacts.get(index));
             }
         }
-        assert cursor_contacts != null;
-        cursor_contacts.close();
+
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
 
-        contactsAdapter = new ContactsAdapter(this, arrayListContacts, mAuth);
+        contactsAdapter = new ContactsAdapter(this, myPhoneContactsInDatabase, firebaseDatabase.mAuth);
         contactsListView.setAdapter(contactsAdapter);
     }
 
@@ -129,18 +102,21 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
+        //database init
+        firebaseDatabase.init();
+
         //back toolbar
         if (getSupportActionBar() != null) {
-
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("Add contacts");
         }
 
-        usersDatabase = FirebaseDatabase.getInstance().getReference("users");
+        usersDatabase = firebaseDatabase.getReference("users");
         usersDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                numberList.clear();
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
                     numberList.add(contact.getPhone().toString());
@@ -150,7 +126,6 @@ public class ContactsActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-        mAuth = FirebaseAuth.getInstance();
 
     }
 

@@ -2,7 +2,6 @@ package memeticame.memeticame;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,12 +20,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import memeticame.memeticame.contacts.ContactsActivity;
+import memeticame.memeticame.models.Database;
 import memeticame.memeticame.users.PhoneAuthActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    FirebaseAuth mAuth;
+    public Database firebaseDatabase = new Database();
     public static Context contextOfApplication;
 
     //context for fragmentse
@@ -51,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //database initialization
+        firebaseDatabase.init();
+
         setContentView(R.layout.activity_main);
 
         contextOfApplication = getApplicationContext();
@@ -102,8 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.log_out) {
-            mAuth = FirebaseAuth.getInstance();
-            mAuth.signOut();
+            firebaseDatabase.mAuth.signOut();
             Intent intent = getIntent();
             finish();
             startActivity(intent);
