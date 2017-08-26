@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import memeticame.memeticame.contacts.ChatsContactsAdapter;
 import memeticame.memeticame.models.Contact;
 import memeticame.memeticame.models.Database;
 import memeticame.memeticame.models.Phone;
@@ -34,7 +35,7 @@ public class FragmentChats extends Fragment {
     private List<String> myPhoneContactsNumbers = new ArrayList<String>();
     private List<String> myPhoneContactsNames = new ArrayList<String>();
 
-    private ArrayAdapter arrayAdapter;
+    private ChatsContactsAdapter arrayAdapter;
     private ArrayList<Contact> myPhoneContacts;
 
     private Database firebaseDatabase = new Database();
@@ -52,7 +53,7 @@ public class FragmentChats extends Fragment {
             myPhoneContactsNames.add(contact.getName());
         }
 
-        arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, chatsList);
+        arrayAdapter = new ChatsContactsAdapter(getActivity(), chatsList, firebaseDatabase.mAuth);
         return inflater.inflate(R.layout.fragment_chats, container, false);
     }
 
