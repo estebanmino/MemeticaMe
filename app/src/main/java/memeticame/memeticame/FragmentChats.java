@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import memeticame.memeticame.chats.ChatRoomActivity;
 import memeticame.memeticame.contacts.ChatsContactsAdapter;
 import memeticame.memeticame.models.Contact;
 import memeticame.memeticame.models.Database;
@@ -37,6 +40,7 @@ public class FragmentChats extends Fragment {
 
     private ChatsContactsAdapter arrayAdapter;
     private ArrayList<Contact> myPhoneContacts;
+    private ArrayList<Contact> myPhoneChatsContacts = new ArrayList<Contact>();
 
     private Database firebaseDatabase = new Database();
     private Phone mPhone = new Phone();
@@ -53,7 +57,7 @@ public class FragmentChats extends Fragment {
             myPhoneContactsNames.add(contact.getName());
         }
 
-        arrayAdapter = new ChatsContactsAdapter(getActivity(), chatsList, firebaseDatabase.mAuth);
+        arrayAdapter = new ChatsContactsAdapter(getActivity(), myPhoneChatsContacts, firebaseDatabase.mAuth);
         return inflater.inflate(R.layout.fragment_chats, container, false);
     }
 
@@ -70,6 +74,7 @@ public class FragmentChats extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 myChatsList.clear();
                 chatsList.clear();
+                myPhoneChatsContacts.clear();
 
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
@@ -84,10 +89,13 @@ public class FragmentChats extends Fragment {
                         for (String chat_number: myChatsList) {
                             if (myPhoneContactsNumbers.contains(chat_number)) {
                                 int index = myPhoneContactsNumbers.indexOf(chat_number);
-                                chatsList.add(myPhoneContactsNames.get(index));
+                                myPhoneChatsContacts.add(myPhoneContacts.get(index));
                             }
                             else {
-                                chatsList.add("Desconocido");
+                                Contact unknownContact = new Contact();
+                                unknownContact.setName(chat_number);
+                                unknownContact.setPhone(chat_number);
+                                myPhoneChatsContacts.add(unknownContact);
                             }
                         }
                     }
@@ -100,5 +108,16 @@ public class FragmentChats extends Fragment {
             }
         });
         listview.setAdapter(arrayAdapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), "Name selected:", Toast.LENGTH_LONG).show();
+                startActivity(ChatRoomActivity.getIntent(getActivity(),
+                        myPhoneChatsContacts.get(i).getName(),
+                        myPhoneChatsContacts.get(i).getPhone()));
+            }
+
+        });
     }
 }

@@ -29,9 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".contacts.AddNumberActivity"
-            android:label="Add number"/>
-
+        <activity
+            android:name=".contacts.AddNumberActivity"
+            android:label="Add number" />
 
         <service android:name=".firebase.MyFirebaseMessagingService">
             <intent-filter>
@@ -44,6 +44,7 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".chats.ChatRoomActivity"></activity>
     </application>
 
 </manifest>

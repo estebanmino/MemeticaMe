@@ -26,11 +26,11 @@ import memeticame.memeticame.models.Contact;
 public class ChatsContactsAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<String> arrayList;
+    private ArrayList<Contact> arrayList;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-    public ChatsContactsAdapter(Context context, ArrayList<String> arrayList, FirebaseAuth mAuth) {
+    public ChatsContactsAdapter(Context context, ArrayList<Contact> arrayList, FirebaseAuth mAuth) {
         this.context = context;
         this.arrayList = arrayList;
         this.mAuth = mAuth;
@@ -63,7 +63,7 @@ public class ChatsContactsAdapter extends BaseAdapter {
         final TextView contactName = convertView.findViewById(R.id.contact_name);
         final TextView lastMessage = convertView.findViewById(R.id.last_message);
 
-        final String elementName = arrayList.get(position);
+        final String elementName = arrayList.get(position).getName();
 
         contactName.setText(elementName);
         lastMessage.setText("last message");

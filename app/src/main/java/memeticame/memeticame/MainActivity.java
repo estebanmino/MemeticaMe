@@ -79,12 +79,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab_log = (FloatingActionButton) findViewById(R.id.fab_log);
-        fab_log.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
     }
 
 
