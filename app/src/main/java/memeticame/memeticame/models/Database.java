@@ -11,6 +11,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.Timestamp;
+import java.util.Date;
+import java.util.UUID;
+
 import memeticame.memeticame.contacts.AddNumberActivity;
 import memeticame.memeticame.contacts.ContactsAdapter;
 
@@ -41,26 +45,48 @@ public class Database {
     public boolean isMyContact(final String phone) {
         DatabaseReference usersReference =
                 mDatabase.getReference("users/"+mAuth.getCurrentUser().getPhoneNumber()+"/contacts");
-
         usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Log.d("datasnapshot", dataSnapshot.toString() + phone);
-
                 if (dataSnapshot.hasChild(phone)) {
-                    Log.d("indatabasecheck", "true");
                     isMyContactResult ^= true;
                 }
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-        Log.d("returninf", isMyContactResult.toString());
         return  isMyContactResult;
+    }
+
+    public void sendMessageTo(final String content, final String receiverPhone) {
+        DatabaseReference currentUserCOntactsReference = mDatabase.getReference("users/"+
+                mAuth.getCurrentUser().getPhoneNumber()+"/contacts");
+
+        final String uuidMessage = UUID.randomUUID().toString();
+        final String chatRoomUuid;
+        currentUserCOntactsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(receiverPhone)) {
+                    final String referencePath = "chatRooms/"+dataSnapshot.
+                            child(receiverPhone).getValue().toString()+"/"+uuidMessage+"/";
+
+                    final DatabaseReference contentReference = mDatabase.getReference(referencePath+"content");
+                    final DatabaseReference authorReference = mDatabase.getReference(referencePath+"author");
+                    final DatabaseReference timestampReference = mDatabase.getReference(referencePath+"timestamp");
+
+                    contentReference.setValue(content);
+                    authorReference.setValue(mAuth.getCurrentUser().getPhoneNumber());
+
+                    Date date = new Date();
+                    long timestamp =  date.getTime();
+                    timestampReference.setValue(timestamp);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 }

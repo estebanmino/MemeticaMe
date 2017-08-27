@@ -7,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import memeticame.memeticame.R;
 import memeticame.memeticame.contacts.AddNumberActivity;
 import memeticame.memeticame.contacts.ContactsActivity;
 import memeticame.memeticame.models.Contact;
+import memeticame.memeticame.models.Database;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
@@ -21,10 +24,10 @@ public class ChatRoomActivity extends AppCompatActivity {
     private Contact chatContact = new Contact();
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PHONE = "phone";
+    public Database firebaseDatabase = new Database();
 
 
     public static Intent getIntent(Context context, String name, String phone) {
-        Log.d("oooo","getIntent");
         Intent intent = new Intent(context,ChatRoomActivity.class);
         intent.putExtra(KEY_USERNAME,name);
         intent.putExtra(KEY_PHONE,phone);
@@ -36,6 +39,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
 
+        firebaseDatabase.init();
 
         chatContact.setName(getIntent().getStringExtra(KEY_USERNAME));
         chatContact.setPhone(getIntent().getStringExtra(KEY_PHONE));
@@ -46,6 +50,19 @@ public class ChatRoomActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle(chatContact.getName());
         }
+
+        FloatingActionButton fabSend = (FloatingActionButton)findViewById(R.id.fab_send);
+        final EditText editMessage = (EditText) findViewById(R.id.edit_message);
+
+        fabSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseDatabase.sendMessageTo(
+                        editMessage.getText().toString(),
+                        chatContact.getPhone());
+            }
+        });
+
 
 
     }
