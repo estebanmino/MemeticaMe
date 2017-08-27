@@ -11,7 +11,7 @@ public class Contact {
     private String name;
     private String phone;
     private String id;
-    private HashMap<String, Boolean> contacts;
+    private HashMap<String, String> contacts;
 
     public String getId() {
         return id;
@@ -25,7 +25,7 @@ public class Contact {
         return phone;
     }
 
-    public HashMap<String, Boolean> getContacts() {
+    public HashMap<String, String> getContacts() {
         return contacts;
     }
 

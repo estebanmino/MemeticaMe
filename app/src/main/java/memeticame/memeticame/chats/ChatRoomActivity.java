@@ -6,10 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import memeticame.memeticame.R;
 import memeticame.memeticame.contacts.AddNumberActivity;
+import memeticame.memeticame.contacts.ContactsActivity;
 import memeticame.memeticame.models.Contact;
 
 public class ChatRoomActivity extends AppCompatActivity {
@@ -25,7 +27,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         Log.d("oooo","getIntent");
         Intent intent = new Intent(context,ChatRoomActivity.class);
         intent.putExtra(KEY_USERNAME,name);
-        intent.putExtra("PHONE",phone);
+        intent.putExtra(KEY_PHONE,phone);
         return intent;
     }
 
@@ -46,5 +48,14 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

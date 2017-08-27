@@ -3,6 +3,7 @@ package memeticame.memeticame;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,12 +79,12 @@ public class FragmentChats extends Fragment {
 
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
-                    HashMap<String,Boolean> MyContactsMap = contact.getContacts();
+                    HashMap<String,String> MyContactsMap = contact.getContacts();
 
                     if(firebaseDatabase.getCurrentUser().getPhoneNumber().equals(contact.getPhone())
                             && MyContactsMap != null) {
 
-                        for (Map.Entry<String, Boolean> entry : MyContactsMap.entrySet()) {
+                        for (Map.Entry<String, String> entry : MyContactsMap.entrySet()) {
                             myChatsList.add(entry.getKey().toString());
                         }
                         for (String chat_number: myChatsList) {

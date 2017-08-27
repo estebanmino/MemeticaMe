@@ -67,6 +67,7 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     public void getContacts() {
+        myPhoneContactsInDatabase.clear();
         myPhoneContacts = mPhone.getContacts();
         for (Contact contact: myPhoneContacts) {
             myPhoneContactsNumbers.add(contact.getPhone());
