@@ -112,11 +112,33 @@ public class FragmentChats extends Fragment {
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "Name selected:", Toast.LENGTH_LONG).show();
-                startActivity(ChatRoomActivity.getIntent(getActivity(),
-                        myPhoneChatsContacts.get(i).getName(),
-                        myPhoneChatsContacts.get(i).getPhone()));
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+
+                //chat rooms uuid
+                final DatabaseReference chatRoomReference = firebaseDatabase.getReference("users/"+
+                        firebaseDatabase.getCurrentUser().getPhoneNumber()+"/contacts/");
+
+                chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.child(myPhoneChatsContacts.get(i).getPhone()) != null){
+                            String chatRoomUid = dataSnapshot.child(
+                                    myPhoneChatsContacts.get(i).getPhone()).getValue().toString();
+                            Log.d("FOUND CHATROOM",chatRoomUid);
+                            startActivity(ChatRoomActivity.getIntent(getActivity(),
+                                    myPhoneChatsContacts.get(i).getName(),
+                                    myPhoneChatsContacts.get(i).getPhone(),
+                                    chatRoomUid));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
 
         });

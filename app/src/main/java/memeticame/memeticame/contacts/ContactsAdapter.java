@@ -98,10 +98,10 @@ public class ContactsAdapter extends BaseAdapter {
                         database.getReference("users/" + elementPhone + "/contacts/" + currentUser.getPhoneNumber());
                 contactUserPhoneReference.setValue(uuidChatRoom);
 
-                context.startActivity(
-                        ChatRoomActivity.getIntent(v.getContext(),
-                                elementName,
-                                elementPhone));
+                //context.startActivity(
+                  //      ChatRoomActivity.getIntent(v.getContext(),
+                    //            elementName,
+                      //          elementPhone));
             }
         });
 

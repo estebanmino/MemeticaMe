@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import memeticame.memeticame.R;
 import memeticame.memeticame.models.Contact;
@@ -27,16 +29,19 @@ public class ChatRoomActivity extends AppCompatActivity {
     private Contact chatContact = new Contact();
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PHONE = "phone";
+    public static final String KEY_CHAT_ROOM_UUID = "chatRoomUuid";
+
     public Database firebaseDatabase = new Database();
     private ArrayList<Message> messagesList = new ArrayList<Message>();
     private  ChatRoomAdapter chatRoomAdapter;
     private ListView listView;
 
 
-    public static Intent getIntent(Context context, String name, String phone) {
+    public static Intent getIntent(Context context, String name, String phone, String chatRoomUuid) {
         Intent intent = new Intent(context,ChatRoomActivity.class);
         intent.putExtra(KEY_USERNAME,name);
         intent.putExtra(KEY_PHONE,phone);
+        intent.putExtra(KEY_CHAT_ROOM_UUID,chatRoomUuid);
         return intent;
     }
 
@@ -49,6 +54,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         chatContact.setName(getIntent().getStringExtra(KEY_USERNAME));
         chatContact.setPhone(getIntent().getStringExtra(KEY_PHONE));
+        String chatRoomUuid = getIntent().getStringExtra(KEY_CHAT_ROOM_UUID);
 
         //back toolbar
         if (getSupportActionBar() != null) {
@@ -73,19 +79,23 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.reyclerview_message_list);
 
-        listView.setAdapter(chatRoomAdapter);
 
+        Log.d("INCHATROOMACTIVITY", chatRoomUuid);
+        DatabaseReference chatRommReference = firebaseDatabase.getReference("chatRooms/"+chatRoomUuid+"/");
 
-        final DatabaseReference chatRoomReference = firebaseDatabase.getReference("users/"+
-                firebaseDatabase.getCurrentUser().getPhoneNumber()+"/contacts/");
-
-        chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        chatRommReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(chatContact.getPhone()) != null){
-                    String chatRoomUid = dataSnapshot.child(chatContact.getPhone()).getValue().toString();
-                    retrieveMessages(chatRoomUid);
+                Log.d("ONDATACHANGE", "vgjhsoish");
+                messagesList.clear();
+                for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                    Message message = messageSnapshot.getValue(Message.class);
+                    if (message.getAuthor()!=null) {
+                        messagesList.add(message);
+                    }
                 }
+
+                chatRoomAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -93,6 +103,8 @@ public class ChatRoomActivity extends AppCompatActivity {
 
             }
         });
+        listView.setAdapter(chatRoomAdapter);
+
     }
 
     @Override
@@ -104,24 +116,4 @@ public class ChatRoomActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void retrieveMessages(String chatRoomUuid) {
-
-        DatabaseReference chatRommReference = firebaseDatabase.getReference("chatRooms/"+chatRoomUuid);
-
-        chatRommReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    Message message = messageSnapshot.getValue(Message.class);
-                    messagesList.add(message);
-                }
-                chatRoomAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 }

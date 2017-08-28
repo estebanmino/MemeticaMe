@@ -1,6 +1,7 @@
 package memeticame.memeticame.chats;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,26 @@ public class ChatRoomAdapter extends BaseAdapter {
     private FirebaseAuth mAuth;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
+
     public ChatRoomAdapter(Context context, ArrayList<Message> messagesList, FirebaseAuth mAuth) {
         this.context = context;
         this.messagesList = messagesList;
         this.mAuth = mAuth;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Message message = messagesList.get(position);
+        Log.d("messageeeee", message.getAuthor());
+        Log.d("messageeeee cont", message.getContent());
+        if (message.getAuthor().equals(mAuth.getCurrentUser().getPhoneNumber())) {
+            return VIEW_TYPE_MESSAGE_SENT;
+        }
+        else {
+            return VIEW_TYPE_MESSAGE_RECEIVED;
+        }
     }
 
     @Override
@@ -51,22 +68,27 @@ public class ChatRoomAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (convertView == null) {
+        if (getItemViewType(position) == VIEW_TYPE_MESSAGE_RECEIVED) {
             LayoutInflater layoutInflater =
                     (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.chat_message_view,null);
+            convertView = layoutInflater.inflate(R.layout.chat_message_received, null);
+        }
+        else {
+            LayoutInflater layoutInflater =
+                    (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = layoutInflater.inflate(R.layout.chat_message_sent, null);
         }
 
         final TextView message = convertView.findViewById(R.id.text_message_body);
-        final TextView author = convertView.findViewById(R.id.text_message_name);
+        //final TextView author = convertView.findViewById(R.id.text_message_name);
         final TextView timestamp = convertView.findViewById(R.id.text_message_time);
 
-        final String messageAuthor = messagesList.get(position).getAuthor();
+        //final String messageAuthor = messagesList.get(position).getAuthor();
         final String messageContent = messagesList.get(position).getContent();
         final long messageTimestamp = messagesList.get(position).getTimestamp();
 
         message.setText(messageContent);
-        author.setText(messageAuthor);
+        //author.setText(messageAuthor);
         Date date = new Date(messageTimestamp);
         timestamp.setText(date.toString());
 
