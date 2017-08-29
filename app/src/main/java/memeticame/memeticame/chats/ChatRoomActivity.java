@@ -17,6 +17,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import memeticame.memeticame.R;
@@ -94,6 +97,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                         messagesList.add(message);
                     }
                 }
+                Collections.sort(messagesList, (e1,e2)-> new Date(e1.getTimestamp()).compareTo(new Date(e2.getTimestamp())));
 
                 chatRoomAdapter.notifyDataSetChanged();
             }
