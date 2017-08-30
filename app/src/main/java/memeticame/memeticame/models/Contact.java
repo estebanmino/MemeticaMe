@@ -11,7 +11,7 @@ public class Contact {
     private String name;
     private String phone;
     private String id;
-    private HashMap<String, String> contacts;
+    private HashMap<String, String> contacts = null;
 
     public String getId() {
         return id;

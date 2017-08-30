@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,8 +24,8 @@ import memeticame.memeticame.users.PhoneAuthActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    public Database firebaseDatabase = new Database();
-    public static Context contextOfApplication;
+    private Database firebaseDatabase = new Database();
+    private static Context contextOfApplication;
 
     //context for fragmentse
     public static Context getContextOfApplication()
@@ -38,9 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
-        } else {
+        if (user == null) {
             // No user is signed in
             startActivity(PhoneAuthActivity.getIntent(MainActivity.this));
         }
@@ -72,12 +69,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.mipmap.ic_memeaudio);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(ContactsActivity.getIntent(MainActivity.this));
-            }
-        });
+        fab.setOnClickListener(view -> startActivity(
+                ContactsActivity.getIntent(MainActivity.this)
+        ));
 
     }
 

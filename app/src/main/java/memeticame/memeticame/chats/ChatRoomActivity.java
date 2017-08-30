@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -17,9 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 import memeticame.memeticame.R;
@@ -29,15 +26,14 @@ import memeticame.memeticame.models.Message;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
-    private Contact chatContact = new Contact();
-    public static final String KEY_USERNAME = "username";
-    public static final String KEY_PHONE = "phone";
-    public static final String KEY_CHAT_ROOM_UUID = "chatRoomUuid";
+    private final Contact chatContact = new Contact();
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_PHONE = "phone";
+    private static final String KEY_CHAT_ROOM_UUID = "chatRoomUuid";
 
-    public Database firebaseDatabase = new Database();
-    private ArrayList<Message> messagesList = new ArrayList<Message>();
+    private final Database firebaseDatabase = new Database();
+    private final ArrayList<Message> messagesList = new ArrayList<>();
     private  ChatRoomAdapter chatRoomAdapter;
-    private ListView listView;
 
 
     public static Intent getIntent(Context context, String name, String phone, String chatRoomUuid) {
@@ -69,18 +65,13 @@ public class ChatRoomActivity extends AppCompatActivity {
         FloatingActionButton fabSend = (FloatingActionButton)findViewById(R.id.fab_send);
         final EditText editMessage = (EditText) findViewById(R.id.edit_message);
 
-        fabSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebaseDatabase.sendMessageTo(
-                        editMessage.getText().toString(),
-                        chatContact.getPhone());
-            }
-        });
+        fabSend.setOnClickListener(view -> firebaseDatabase.sendMessageTo(
+                editMessage.getText().toString(),
+                chatContact.getPhone()));
 
         chatRoomAdapter  = new ChatRoomAdapter(ChatRoomActivity.this, messagesList, firebaseDatabase.mAuth);
 
-        listView = (ListView) findViewById(R.id.reyclerview_message_list);
+        ListView listView = (ListView) findViewById(R.id.reyclerview_message_list);
 
 
         Log.d("INCHATROOMACTIVITY", chatRoomUuid);
@@ -93,6 +84,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                 messagesList.clear();
                 for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
                     Message message = messageSnapshot.getValue(Message.class);
+                    assert message != null;
                     if (message.getAuthor()!=null) {
                         messagesList.add(message);
                     }

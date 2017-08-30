@@ -17,7 +17,7 @@ import memeticame.memeticame.MainActivity;
 public class Phone {
 
     public ArrayList<Contact> getContacts() {
-        ArrayList<Contact> array_list_contacts = new ArrayList<Contact>();
+        ArrayList<Contact> array_list_contacts = new ArrayList<>();
         Context applicationContext = MainActivity.getContextOfApplication();
         Cursor cursor_contacts = null;
 
@@ -48,6 +48,7 @@ public class Phone {
                     array_list_contacts.add(contact);
                 }
             }
+            cursor_contacts.close();
         }
         return array_list_contacts;
     }

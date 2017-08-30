@@ -7,10 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import memeticame.memeticame.chats.ChatRoomActivity;
 import memeticame.memeticame.contacts.ChatsContactsAdapter;
@@ -34,14 +31,14 @@ import memeticame.memeticame.models.Phone;
 
 public class FragmentChats extends Fragment {
 
-    private ArrayList<String> myChatsList = new ArrayList<String>();
-    private ArrayList<String> chatsList = new ArrayList<String>();
-    private List<String> myPhoneContactsNumbers = new ArrayList<String>();
-    private List<String> myPhoneContactsNames = new ArrayList<String>();
+    private ArrayList<String> myChatsList = new ArrayList<>();
+    private ArrayList<String> chatsList = new ArrayList<>();
+    private List<String> myPhoneContactsNumbers = new ArrayList<>();
+    private List<String> myPhoneContactsNames = new ArrayList<>();
 
     private ChatsContactsAdapter arrayAdapter;
     private ArrayList<Contact> myPhoneContacts;
-    private ArrayList<Contact> myPhoneChatsContacts = new ArrayList<Contact>();
+    private ArrayList<Contact> myPhoneChatsContacts = new ArrayList<>();
 
     private Database firebaseDatabase = new Database();
     private Phone mPhone = new Phone();
@@ -66,7 +63,7 @@ public class FragmentChats extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ListView listview = (ListView) view.findViewById(R.id.chats_list);
+        final ListView listview = view.findViewById(R.id.chats_list);
 
         final DatabaseReference usersDatabase = firebaseDatabase.getReference("users/");
 
@@ -84,9 +81,8 @@ public class FragmentChats extends Fragment {
                     if(firebaseDatabase.getCurrentUser().getPhoneNumber().equals(contact.getPhone())
                             && MyContactsMap != null) {
 
-                        for (Map.Entry<String, String> entry : MyContactsMap.entrySet()) {
-                            myChatsList.add(entry.getKey().toString());
-                        }
+                        myChatsList.addAll(MyContactsMap.entrySet().stream().map(
+                                entry -> entry.getKey()).collect(Collectors.toList()));
                         for (String chat_number: myChatsList) {
                             if (myPhoneContactsNumbers.contains(chat_number)) {
                                 int index = myPhoneContactsNumbers.indexOf(chat_number);
@@ -110,36 +106,32 @@ public class FragmentChats extends Fragment {
         });
         listview.setAdapter(arrayAdapter);
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+        listview.setOnItemClickListener((adapterView, view1, i, l) -> {
 
-                //chat rooms uuid
-                final DatabaseReference chatRoomReference = firebaseDatabase.getReference("users/"+
-                        firebaseDatabase.getCurrentUser().getPhoneNumber()+"/contacts/");
+            //chat rooms uuid
+            final DatabaseReference chatRoomReference = firebaseDatabase.getReference("users/"+
+                    firebaseDatabase.getCurrentUser().getPhoneNumber()+"/contacts/");
 
-                chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child(myPhoneChatsContacts.get(i).getPhone()) != null){
-                            String chatRoomUid = dataSnapshot.child(
-                                    myPhoneChatsContacts.get(i).getPhone()).getValue().toString();
-                            Log.d("FOUND CHATROOM",chatRoomUid);
-                            startActivity(ChatRoomActivity.getIntent(getActivity(),
-                                    myPhoneChatsContacts.get(i).getName(),
-                                    myPhoneChatsContacts.get(i).getPhone(),
-                                    chatRoomUid));
-                        }
+            chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(myPhoneChatsContacts.get(i).getPhone()) != null){
+                        String chatRoomUid = dataSnapshot.child(
+                                myPhoneChatsContacts.get(i).getPhone()).getValue().toString();
+                        Log.d("FOUND CHATROOM",chatRoomUid);
+                        startActivity(ChatRoomActivity.getIntent(getActivity(),
+                                myPhoneChatsContacts.get(i).getName(),
+                                myPhoneChatsContacts.get(i).getPhone(),
+                                chatRoomUid));
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                }
+            });
 
-
-            }
 
         });
     }

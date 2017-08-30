@@ -1,5 +1,6 @@
 package memeticame.memeticame.chats;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,9 +24,9 @@ import memeticame.memeticame.models.Message;
 
 public class ChatRoomAdapter extends BaseAdapter {
 
-    private Context context;
-    private ArrayList<Message> messagesList;
-    private FirebaseAuth mAuth;
+    private final Context context;
+    private final ArrayList<Message> messagesList;
+    private final FirebaseAuth mAuth;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
@@ -65,6 +66,7 @@ public class ChatRoomAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

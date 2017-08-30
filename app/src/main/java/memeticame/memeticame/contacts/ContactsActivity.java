@@ -29,18 +29,15 @@ import memeticame.memeticame.models.Phone;
 
 public class ContactsActivity extends AppCompatActivity {
 
-    private ContactsAdapter contactsAdapter;
-    private DatabaseReference usersDatabase;
-    private ArrayList<Contact> myPhoneContacts;
-    private List<String> myPhoneContactsNumbers = new ArrayList<String>();
-    private List<String> myPhoneContactsNames = new ArrayList<String>();
+    private final List<String> myPhoneContactsNumbers = new ArrayList<>();
+    private final List<String> myPhoneContactsNames = new ArrayList<>();
 
-    public ArrayList<String> numberList = new ArrayList<String>();
-    public ArrayList<String> addedNumberList = new ArrayList<String>();
+    private final ArrayList<String> numberList = new ArrayList<>();
+    public ArrayList<String> addedNumberList = new ArrayList<>();
 
-    private Database firebaseDatabase = new Database();
-    private Phone mPhone = new Phone();
-    private ArrayList<Contact> myPhoneContactsInDatabase = new ArrayList<Contact>();
+    private final Database firebaseDatabase = new Database();
+    private final Phone mPhone = new Phone();
+    private final ArrayList<Contact> myPhoneContactsInDatabase = new ArrayList<>();
 
 
     @Override
@@ -66,24 +63,22 @@ public class ContactsActivity extends AppCompatActivity {
         return intent;
     }
 
-    public void getContacts() {
+    private void getContacts() {
         myPhoneContactsInDatabase.clear();
-        myPhoneContacts = mPhone.getContacts();
+        ArrayList<Contact> myPhoneContacts = mPhone.getContacts();
         for (Contact contact: myPhoneContacts) {
             myPhoneContactsNumbers.add(contact.getPhone());
             myPhoneContactsNames.add(contact.getName());
         }
 
-        for (String contact_number: numberList) {
-            if (myPhoneContactsNumbers.contains(contact_number)) {
-                int index = myPhoneContactsNumbers.indexOf(contact_number);
-                myPhoneContactsInDatabase.add(myPhoneContacts.get(index));
-            }
-        }
+        numberList.stream().filter(myPhoneContactsNumbers::contains).forEachOrdered(contact_number -> {
+            int index = myPhoneContactsNumbers.indexOf(contact_number);
+            myPhoneContactsInDatabase.add(myPhoneContacts.get(index));
+        });
 
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
 
-        contactsAdapter = new ContactsAdapter(this, myPhoneContactsInDatabase, firebaseDatabase.mAuth);
+        ContactsAdapter contactsAdapter = new ContactsAdapter(this, myPhoneContactsInDatabase, firebaseDatabase.mAuth);
         contactsListView.setAdapter(contactsAdapter);
     }
 
@@ -113,14 +108,15 @@ public class ContactsActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add contacts");
         }
 
-        usersDatabase = firebaseDatabase.getReference("users");
+        DatabaseReference usersDatabase = firebaseDatabase.getReference("users");
         usersDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 numberList.clear();
                 for(DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = userSnapshot.getValue(Contact.class);
-                    numberList.add(contact.getPhone().toString());
+                    assert contact != null;
+                    numberList.add(contact.getPhone());
                 }
                 showContacts();
             }

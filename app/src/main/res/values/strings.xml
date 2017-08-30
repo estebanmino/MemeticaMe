@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">MemeticaMe</string>
     <string name="log__out">Log Out</string>
-    <string name="fragment__chats">Fragment Chats</string>
     <string name="fragment__memeaudio">Fragment Memeaudio</string>
     <string name="fragment__gallery">Fragment Gallery</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="title_activity_splash"></string>
+    <string name="title_activity_splash" />
 </resources>

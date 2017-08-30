@@ -2,11 +2,9 @@ package memeticame.memeticame.contacts;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import memeticame.memeticame.R;
-import memeticame.memeticame.chats.ChatRoomActivity;
 import memeticame.memeticame.models.Contact;
 import memeticame.memeticame.models.Database;
 
@@ -30,11 +27,11 @@ import memeticame.memeticame.models.Database;
 
 public class ContactsAdapter extends BaseAdapter {
 
-    private Context context;
-    private ArrayList<Contact> arrayList;
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private Database firebaseFirebase = new Database();
+    private final Context context;
+    private final ArrayList<Contact> arrayList;
+    private final FirebaseAuth mAuth;
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final Database firebaseFirebase = new Database();
 
     public ContactsAdapter(Context context, ArrayList<Contact> arrayList, FirebaseAuth mAuth) {
         this.context = context;
@@ -77,32 +74,29 @@ public class ContactsAdapter extends BaseAdapter {
         contactName.setText(elementName);
         contactPhone.setText(elementPhone);
 
-        FloatingActionButton addBtn = (FloatingActionButton) convertView.findViewById(R.id.add_button);
+        FloatingActionButton addBtn = convertView.findViewById(R.id.add_button);
 
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //notifyDataSetChanged();
-                FirebaseUser currentUser = mAuth.getCurrentUser();
+        addBtn.setOnClickListener(v -> {
+            //notifyDataSetChanged();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                Toast.makeText(context, "Name selected: " + elementName + "\nPhone: " +
-                        elementPhone + " " + currentUser.getPhoneNumber(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Name selected: " + elementName + "\nPhone: " +
+                    elementPhone + " " + currentUser.getPhoneNumber(), Toast.LENGTH_LONG).show();
 
-                String uuidChatRoom = UUID.randomUUID().toString();
-                DatabaseReference myUserPhoneReference =
-                        database.getReference("users/" + currentUser.getPhoneNumber() + "/contacts/" + elementPhone);
-                myUserPhoneReference.setValue(uuidChatRoom);
+            String uuidChatRoom = UUID.randomUUID().toString();
+            DatabaseReference myUserPhoneReference =
+                    database.getReference("users/" + currentUser.getPhoneNumber() + "/contacts/" + elementPhone);
+            myUserPhoneReference.setValue(uuidChatRoom);
 
-                DatabaseReference contactUserPhoneReference =
-                        database.getReference("users/" + elementPhone + "/contacts/" + currentUser.getPhoneNumber());
-                contactUserPhoneReference.setValue(uuidChatRoom);
+            DatabaseReference contactUserPhoneReference =
+                    database.getReference("users/" + elementPhone + "/contacts/" + currentUser.getPhoneNumber());
+            contactUserPhoneReference.setValue(uuidChatRoom);
 
-                //context.startActivity(
-                  //      ChatRoomActivity.getIntent(v.getContext(),
-                    //            elementName,
-                      //          elementPhone));
-            }
+            //context.startActivity(
+              //      ChatRoomActivity.getIntent(v.getContext(),
+                //            elementName,
+                  //          elementPhone));
         });
 
         return convertView;

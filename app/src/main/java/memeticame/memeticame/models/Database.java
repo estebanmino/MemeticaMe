@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class Database {
 
-    public FirebaseDatabase mDatabase;
+    private FirebaseDatabase mDatabase;
     public FirebaseAuth mAuth;
     public Boolean isMyContactResult = false;
 

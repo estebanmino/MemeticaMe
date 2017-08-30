@@ -2,7 +2,6 @@ package memeticame.memeticame.users;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,11 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,23 +25,25 @@ import java.util.concurrent.TimeUnit;
 
 import memeticame.memeticame.MainActivity;
 import memeticame.memeticame.R;
-import memeticame.memeticame.contacts.ContactsActivity;
 
 public class PhoneAuthActivity extends AppCompatActivity {
 
 
-    EditText EditPhone, EditCode;
-    Button SubmitPhone, SubmitCode, SignOut;
-    TextView TextPhone, TextCode;
+    private EditText EditPhone;
+    private EditText EditCode;
+    private Button SubmitPhone;
+    private Button SubmitCode;
+    private TextView TextPhone;
+    private TextView TextCode;
 
     // [START declare_auth]
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     // [END declare_auth]
 
     boolean mVerificationInProgress = false;
-    String mVerificationId;
-    PhoneAuthProvider.ForceResendingToken mResendToken;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private String mVerificationId;
+    private PhoneAuthProvider.ForceResendingToken mResendToken;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
 
     public static Intent getIntent(Context context) {
@@ -63,7 +61,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
         EditCode = (EditText) findViewById(R.id.edit_code);
         SubmitCode = (Button) findViewById(R.id.submit_code);
 
-        SignOut = (Button) findViewById(R.id.log_out);
+        Button signOut = (Button) findViewById(R.id.log_out);
 
         TextPhone = (TextView) findViewById(R.id.text_phone);
         TextCode = (TextView) findViewById(R.id.text_code);
@@ -132,72 +130,63 @@ public class PhoneAuthActivity extends AppCompatActivity {
         };
 
 
-        SubmitPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validatePhoneNumber(EditPhone.getText().toString())) {
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            EditPhone.getText().toString(),
-                            60,
-                            TimeUnit.SECONDS,
-                            PhoneAuthActivity.this,
-                            mCallbacks
-                    );
-                }
+        SubmitPhone.setOnClickListener(view -> {
+            if (validatePhoneNumber(EditPhone.getText().toString())) {
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                        EditPhone.getText().toString(),
+                        60,
+                        TimeUnit.SECONDS,
+                        PhoneAuthActivity.this,
+                        mCallbacks
+                );
             }
         });
 
-        SubmitCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(
-                        mVerificationId,
-                        EditCode.getText().toString()
-                );
-                signInWithPhoneAuthCredential(credential);
-            }
+        SubmitCode.setOnClickListener(view -> {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(
+                    mVerificationId,
+                    EditCode.getText().toString()
+            );
+            signInWithPhoneAuthCredential(credential);
         });
 
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(PhoneAuthActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithCredential:success");
-                            Toast.makeText(PhoneAuthActivity.this,"Verification done",Toast.LENGTH_LONG).show();
+                .addOnCompleteListener(PhoneAuthActivity.this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        //Log.d(TAG, "signInWithCredential:success");
+                        Toast.makeText(PhoneAuthActivity.this,"Verification done",Toast.LENGTH_LONG).show();
 
-                            FirebaseUser user = task.getResult().getUser();
-                            Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
+                        FirebaseUser user = task.getResult().getUser();
+                        Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
 
-                            //DatabaseReference myRef = database.getReference("users");
-                            //String Uid = user.getUid();
-                            //myRef.setValue(Uid);
+                        //DatabaseReference myRef = database.getReference("users");
+                        //String Uid = user.getUid();
+                        //myRef.setValue(Uid);
 
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myUser = database.getReference("users");
-                            String phoneNumber = user.getPhoneNumber();
-                            myUser.setValue(phoneNumber);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myUser = database.getReference("users");
+                        String phoneNumber = user.getPhoneNumber();
+                        myUser.setValue(phoneNumber);
 
-                            DatabaseReference myUserReference = database.getReference("users/"+phoneNumber+"/contact_name");
-                            myUserReference.setValue("Nombre");
+                        DatabaseReference myUserReference = database.getReference("users/"+phoneNumber+"/contact_name");
+                        myUserReference.setValue("Nombre");
 
-                            DatabaseReference myUserPhoneReference = database.getReference("users/"+phoneNumber+"/contact_phone");
-                            myUserPhoneReference.setValue(phoneNumber);
+                        DatabaseReference myUserPhoneReference = database.getReference("users/"+phoneNumber+"/contact_phone");
+                        myUserPhoneReference.setValue(phoneNumber);
 
-                            startActivity(intent);
-                            // ...
-                        } else {
-                            // Sign in failed, display a message and update the UI
-                            //Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                Toast.makeText(PhoneAuthActivity.this,"Verification failed code invalid",Toast.LENGTH_LONG).show();
+                        startActivity(intent);
+                        // ...
+                    } else {
+                        // Sign in failed, display a message and update the UI
+                        //Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            // The verification code entered was invalid
+                            Toast.makeText(PhoneAuthActivity.this,"Verification failed code invalid",Toast.LENGTH_LONG).show();
 
-                            }
                         }
                     }
                 });
