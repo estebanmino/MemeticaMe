@@ -92,11 +92,6 @@ public class ContactsAdapter extends BaseAdapter {
             DatabaseReference contactUserPhoneReference =
                     database.getReference("users/" + elementPhone + "/contacts/" + currentUser.getPhoneNumber());
             contactUserPhoneReference.setValue(uuidChatRoom);
-
-            //context.startActivity(
-              //      ChatRoomActivity.getIntent(v.getContext(),
-                //            elementName,
-                  //          elementPhone));
         });
 
         return convertView;

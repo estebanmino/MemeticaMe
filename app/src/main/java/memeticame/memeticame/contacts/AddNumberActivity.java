@@ -27,8 +27,11 @@ public class AddNumberActivity extends AppCompatActivity {
 
     private final Database firebaseDatabase = new Database();
     private ContactsAdapter contactsAdapter;
-
-
+    //button search contact
+    private EditText editContactNumber;
+    private Button btnSearchContactNumber;
+    private ListView listResults;
+    private ArrayList<Contact> myPhoneContactsInDatabase = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +44,23 @@ public class AddNumberActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        editContactNumber = (EditText) findViewById(R.id.edit_contact_number);
+        btnSearchContactNumber = (Button) findViewById(R.id.btn_search_contact_number);
+        listResults = (ListView) findViewById(R.id.list_results);
+        myPhoneContactsInDatabase = new ArrayList<>();
+
         //check for child number
         firebaseDatabase.init();
         final DatabaseReference usersReference = firebaseDatabase.getReference("users/");
 
+        listenNumberInDatabase(usersReference);
+    }
 
-        //button search contact
-        final EditText editContactNumber = (EditText) findViewById(R.id.edit_contact_number);
-        final Button btnSearchContactNumber = (Button) findViewById(R.id.btn_search_contact_number);
-        final ListView listResults = (ListView) findViewById(R.id.list_results);
-        final ArrayList<Contact> myPhoneContactsInDatabase = new ArrayList<>();
-
-
+    public void listenNumberInDatabase(DatabaseReference usersReference) {
         btnSearchContactNumber.setOnClickListener(v -> {
             myPhoneContactsInDatabase.clear();
             // your handler code here
             usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
-
-
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild(editContactNumber.getText().toString().replace(" ",""))
@@ -71,7 +73,6 @@ public class AddNumberActivity extends AppCompatActivity {
                     }
                     else {
                         Contact foundContact1 = new Contact();
-                        foundContact1.setName("NUMBER NOT FOUND");
                         myPhoneContactsInDatabase.add(foundContact1);
                         ArrayAdapter arrayAdapter = new ArrayAdapter(AddNumberActivity.this,
                                 android.R.layout.simple_list_item_1, myPhoneContactsInDatabase);
@@ -84,12 +85,7 @@ public class AddNumberActivity extends AppCompatActivity {
                 }
             });
         });
-
-        //list view
-
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -35,6 +35,9 @@ public class ChatRoomActivity extends AppCompatActivity {
     private final ArrayList<Message> messagesList = new ArrayList<>();
     private  ChatRoomAdapter chatRoomAdapter;
 
+    private FloatingActionButton fabSend;
+    private EditText editMessage;
+
 
     public static Intent getIntent(Context context, String name, String phone, String chatRoomUuid) {
         Intent intent = new Intent(context,ChatRoomActivity.class);
@@ -51,9 +54,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         firebaseDatabase.init();
 
-        chatContact.setName(getIntent().getStringExtra(KEY_USERNAME));
-        chatContact.setPhone(getIntent().getStringExtra(KEY_PHONE));
-        String chatRoomUuid = getIntent().getStringExtra(KEY_CHAT_ROOM_UUID);
+        setChatContact();
 
         //back toolbar
         if (getSupportActionBar() != null) {
@@ -62,25 +63,30 @@ public class ChatRoomActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(chatContact.getName());
         }
 
-        FloatingActionButton fabSend = (FloatingActionButton)findViewById(R.id.fab_send);
-        final EditText editMessage = (EditText) findViewById(R.id.edit_message);
-
-        fabSend.setOnClickListener(view -> firebaseDatabase.sendMessageTo(
-                editMessage.getText().toString(),
-                chatContact.getPhone()));
+        listenSentMessage();
 
         chatRoomAdapter  = new ChatRoomAdapter(ChatRoomActivity.this, messagesList, firebaseDatabase.mAuth);
-
         ListView listView = (ListView) findViewById(R.id.reyclerview_message_list);
+        listenForMessages();
+        listView.setAdapter(chatRoomAdapter);
 
+    }
 
-        Log.d("INCHATROOMACTIVITY", chatRoomUuid);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void listenForMessages() {
+        String chatRoomUuid = getIntent().getStringExtra(KEY_CHAT_ROOM_UUID);
         DatabaseReference chatRommReference = firebaseDatabase.getReference("chatRooms/"+chatRoomUuid+"/");
 
         chatRommReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("ONDATACHANGE", "vgjhsoish");
                 messagesList.clear();
                 for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
                     Message message = messageSnapshot.getValue(Message.class);
@@ -99,17 +105,20 @@ public class ChatRoomActivity extends AppCompatActivity {
 
             }
         });
-        listView.setAdapter(chatRoomAdapter);
-
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void setChatContact() {
+        //set contact
+        chatContact.setName(getIntent().getStringExtra(KEY_USERNAME));
+        chatContact.setPhone(getIntent().getStringExtra(KEY_PHONE));
     }
 
+    public void listenSentMessage() {
+        fabSend = (FloatingActionButton)findViewById(R.id.fab_send);
+        editMessage = (EditText) findViewById(R.id.edit_message);
+
+        fabSend.setOnClickListener(view -> firebaseDatabase.sendMessageTo(
+                editMessage.getText().toString(),
+                chatContact.getPhone()));
+    }
 }

@@ -70,14 +70,12 @@ public class ContactsActivity extends AppCompatActivity {
             myPhoneContactsNumbers.add(contact.getPhone());
             myPhoneContactsNames.add(contact.getName());
         }
-
         numberList.stream().filter(myPhoneContactsNumbers::contains).forEachOrdered(contact_number -> {
             int index = myPhoneContactsNumbers.indexOf(contact_number);
             myPhoneContactsInDatabase.add(myPhoneContacts.get(index));
         });
 
         ListView contactsListView = (ListView) findViewById(R.id.contacts_list_view);
-
         ContactsAdapter contactsAdapter = new ContactsAdapter(this, myPhoneContactsInDatabase, firebaseDatabase.mAuth);
         contactsListView.setAdapter(contactsAdapter);
     }
@@ -90,7 +88,6 @@ public class ContactsActivity extends AppCompatActivity {
         } else {
             getContacts();
         }
-
     }
 
     @Override
@@ -123,7 +120,6 @@ public class ContactsActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-
     }
 
     @Override
@@ -139,21 +135,15 @@ public class ContactsActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted
                     getContacts();
-
                 } else {
-
                     // permission denied
                     Intent intent = new Intent(ContactsActivity.this, MainActivity.class);
                     startActivity(intent);
                     Toast.makeText(this, "Until you grant the permission, we canot display the contacts", Toast.LENGTH_LONG).show();
                 }
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 

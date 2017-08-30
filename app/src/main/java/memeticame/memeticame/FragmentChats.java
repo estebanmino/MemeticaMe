@@ -65,6 +65,42 @@ public class FragmentChats extends Fragment {
 
         final ListView listview = view.findViewById(R.id.chats_list);
 
+        listenChatContacts();
+
+        listview.setAdapter(arrayAdapter);
+
+        listenChatClick(listview);
+    }
+
+    private void listenChatClick(ListView listview) {
+        listview.setOnItemClickListener((adapterView, view1, position, l) -> {
+
+            //chat rooms uuid
+            final DatabaseReference chatRoomReference = firebaseDatabase.getReference("users/"+
+                    firebaseDatabase.getCurrentUser().getPhoneNumber()+"/contacts/");
+
+            chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(myPhoneChatsContacts.get(position).getPhone()) != null){
+                        String chatRoomUid = dataSnapshot.child(
+                                myPhoneChatsContacts.get(position).getPhone()).getValue().toString();
+                        startActivity(ChatRoomActivity.getIntent(getActivity(),
+                                myPhoneChatsContacts.get(position).getName(),
+                                myPhoneChatsContacts.get(position).getPhone(),
+                                chatRoomUid));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        });
+    }
+
+    private void listenChatContacts() {
         final DatabaseReference usersDatabase = firebaseDatabase.getReference("users/");
 
         usersDatabase.addValueEventListener(new ValueEventListener() {
@@ -103,36 +139,6 @@ public class FragmentChats extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-        listview.setAdapter(arrayAdapter);
-
-        listview.setOnItemClickListener((adapterView, view1, i, l) -> {
-
-            //chat rooms uuid
-            final DatabaseReference chatRoomReference = firebaseDatabase.getReference("users/"+
-                    firebaseDatabase.getCurrentUser().getPhoneNumber()+"/contacts/");
-
-            chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child(myPhoneChatsContacts.get(i).getPhone()) != null){
-                        String chatRoomUid = dataSnapshot.child(
-                                myPhoneChatsContacts.get(i).getPhone()).getValue().toString();
-                        Log.d("FOUND CHATROOM",chatRoomUid);
-                        startActivity(ChatRoomActivity.getIntent(getActivity(),
-                                myPhoneChatsContacts.get(i).getName(),
-                                myPhoneChatsContacts.get(i).getPhone(),
-                                chatRoomUid));
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
         });
     }
 }
