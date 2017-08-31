@@ -4,7 +4,14 @@
     tools:context="memeticame.memeticame.contacts.AddNumberActivity" >
 
     <item
-        android:id="@+id/add_contacts"
+        android:id="@+id/add_phone"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="100"
+        android:title="Refresh"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/add_contact"
         android:icon="@android:drawable/sym_contact_card"
         android:orderInCategory="100"
         android:title="Refresh"

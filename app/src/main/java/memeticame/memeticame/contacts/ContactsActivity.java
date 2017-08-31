@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -47,12 +48,23 @@ public class ContactsActivity extends AppCompatActivity {
         return true;
     }
 
+    public void insertContact() {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
-        else if (item.getItemId() == R.id.add_contacts) {
+        else if (item.getItemId() == R.id.add_contact) {
+            insertContact();
+        }
+        else if (item.getItemId() == R.id.add_phone) {
             startActivity(AddNumberActivity.getIntent(ContactsActivity.this));
         }
         return super.onOptionsItemSelected(item);

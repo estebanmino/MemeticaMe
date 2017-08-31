@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,7 +79,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
                 // 2 - Auto-retrieval. On some devices Google Play services can automatically
                 //     detect the incoming verification SMS and perform verificaiton without
                 //     user action.
-                //Log.d("", "onVerificationCompleted:" + credential);
 
                 Toast.makeText(PhoneAuthActivity.this,"Verification completed",Toast.LENGTH_LONG).show();
 
@@ -156,6 +156,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(PhoneAuthActivity.this, task -> {
                     if (task.isSuccessful()) {
+                        Log.d("LOG CREDENTIAL", "IN CREDENTIAL");
                         // Sign in success, update UI with the signed-in user's information
                         //Log.d(TAG, "signInWithCredential:success");
                         Toast.makeText(PhoneAuthActivity.this,"Verification done",Toast.LENGTH_LONG).show();
@@ -164,15 +165,12 @@ public class PhoneAuthActivity extends AppCompatActivity {
                         Intent intent = new Intent(PhoneAuthActivity.this, MainActivity.class);
 
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myUser = database.getReference("users");
+                        DatabaseReference myUserRef = database.getReference("users/");
                         String phoneNumber = user.getPhoneNumber();
-                        myUser.setValue(phoneNumber);
+                        DatabaseReference phoneChild = myUserRef.child(phoneNumber);
 
-                        DatabaseReference myUserReference = database.getReference("users/"+phoneNumber+"/contact_name");
-                        myUserReference.setValue("Nombre");
-
-                        DatabaseReference myUserPhoneReference = database.getReference("users/"+phoneNumber+"/contact_phone");
-                        myUserPhoneReference.setValue(phoneNumber);
+                        phoneChild.child("name").setValue("Nombre");
+                        phoneChild.child("phone").setValue(phoneNumber);
 
                         startActivity(intent);
                         // ...
