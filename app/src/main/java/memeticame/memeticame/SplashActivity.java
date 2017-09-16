@@ -8,6 +8,7 @@ import android.os.Handler;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import memeticame.memeticame.users.EmailPasswordAuth;
 import memeticame.memeticame.users.PhoneAuthActivity;
 
 /**
@@ -24,15 +25,11 @@ public class SplashActivity extends AppCompatActivity {
 
         Handler mHandler = new Handler();
         Runnable mRunnble = () -> {
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                //MainActivity.startActivity(SplashActivity.this);
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-            } else {
+
                 //PhoneAuthActivity.startIntent(SplashActivity.this);
-                Intent intent = new Intent(SplashActivity.this, PhoneAuthActivity.class);
+                Intent intent = new Intent(SplashActivity.this, EmailPasswordAuth.class);
                 startActivity(intent);
-            }
+
             finish();
         };
 
