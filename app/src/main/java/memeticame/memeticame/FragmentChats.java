@@ -113,7 +113,7 @@ public class FragmentChats extends Fragment {
                     Contact contact = userSnapshot.getValue(Contact.class);
                     HashMap<String,String> MyContactsMap = contact.getContacts();
 
-                    if(firebaseDatabase.getCurrentUser().getPhoneNumber().equals(contact.getPhone())
+                    if(firebaseDatabase.getCurrentUser().getEmail().equals(contact.getEmail())
                             && MyContactsMap != null) {
 
                         myChatsList.addAll(MyContactsMap.entrySet().stream().map(

@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import memeticame.memeticame.contacts.ContactsActivity;
 import memeticame.memeticame.models.Database;
+import memeticame.memeticame.users.EmailPasswordAuth;
 import memeticame.memeticame.users.PhoneAuthActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -91,10 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.log_out) {
-            firebaseDatabase.mAuth.signOut();
-            Intent intent = getIntent();
+            startActivity(EmailPasswordAuth.getIntent(MainActivity.this));
             finish();
-            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

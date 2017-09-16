@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -167,6 +169,7 @@ public class EmailPasswordAuth extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             startActivity(MainActivity.getIntent(EmailPasswordAuth.this));
                             //updateUI(user);
+                            createUser(email, phone);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("CUEAP", "createUserWithEmail:failure", task.getException());
@@ -211,5 +214,15 @@ public class EmailPasswordAuth extends AppCompatActivity {
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context,EmailPasswordAuth.class);
         return intent;
+    }
+
+    private void createUser(String email, String phone) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myUserRef = database.getReference("users/");
+        DatabaseReference phoneChild = myUserRef.child(phone);
+
+        phoneChild.child("email").setValue(email);
+        phoneChild.child("phone").setValue(phone);
     }
 }
