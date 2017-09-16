@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -15,6 +16,7 @@ public class EmailPasswordAuth extends AppCompatActivity {
 
     private EditText editEmail;
     private EditText editPassword;
+    private EditText editPhoneNumber;
     private Button btnSignIn;
     private Button btnSignUp;
     private Button btnToSignUp;
@@ -28,6 +30,7 @@ public class EmailPasswordAuth extends AppCompatActivity {
 
         editEmail = (EditText) findViewById(R.id.edit_email);
         editPassword = (EditText) findViewById(R.id.edit_password);
+        editPhoneNumber = (EditText) findViewById(R.id.edit_phone_number);
 
         btnSignIn = (Button) findViewById(R.id.btn_sign_in);
         btnSignUp = (Button) findViewById(R.id.btn_sign_up);
@@ -40,6 +43,7 @@ public class EmailPasswordAuth extends AppCompatActivity {
 
         btnSignUp.setVisibility(EditText.GONE);
         btnToSignIn.setVisibility(EditText.GONE);
+        editPhoneNumber.setVisibility(EditText.INVISIBLE);
 
         onClickBtnToSignUp();
         onClickBtnToSignIn();
@@ -55,7 +59,9 @@ public class EmailPasswordAuth extends AppCompatActivity {
                 btnToSignUp.setVisibility(Button.GONE);
                 btnSignUp.setVisibility(Button.VISIBLE);
                 btnToSignIn.setVisibility(Button.VISIBLE);
+                editPhoneNumber.setVisibility(EditText.VISIBLE);
                 titleText.setText("Register in MemeticaMe");
+                onClickBtnSignUp();
             }
         });
     }
@@ -68,6 +74,8 @@ public class EmailPasswordAuth extends AppCompatActivity {
                 btnToSignUp.setVisibility(Button.VISIBLE);
                 btnSignUp.setVisibility(Button.GONE);
                 btnToSignIn.setVisibility(Button.GONE);
+                editPhoneNumber.setVisibility(EditText.INVISIBLE);
+
                 titleText.setText("Log In MemeticaMe");
             }
         });
@@ -77,7 +85,21 @@ public class EmailPasswordAuth extends AppCompatActivity {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int validations = 0;
+                String email = editEmail.getText().toString();
+                if (email.matches("") || !isValidEmail(email)) {
+                    Toast.makeText(EmailPasswordAuth.this, "You did not enter a valid email", Toast.LENGTH_SHORT).show();
+                    validations++;
+                }
 
+                String password = editPassword.getText().toString();
+                if (password.matches("")) {
+                    Toast.makeText(EmailPasswordAuth.this, "You did not enter a password", Toast.LENGTH_SHORT).show();
+                    validations++;
+                }
+                if (validations == 0) {
+                    Toast.makeText(EmailPasswordAuth.this, "Sign in correctly", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -86,8 +108,38 @@ public class EmailPasswordAuth extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int validations = 0;
+                String email = editEmail.getText().toString();
+                if (email.matches("") || !isValidEmail(email)) {
+                    Toast.makeText(EmailPasswordAuth.this, "You did not enter a valid email", Toast.LENGTH_SHORT).show();
+                    validations++;
+                }
 
+                String password = editPassword.getText().toString();
+                if (password.matches("")) {
+                    Toast.makeText(EmailPasswordAuth.this, "You did not enter a password", Toast.LENGTH_SHORT).show();
+                    validations++;
+                }
+
+                String phone = editPhoneNumber.getText().toString();
+                if (phone.matches("")) {
+                    Toast.makeText(EmailPasswordAuth.this, "You did not enter your phone number", Toast.LENGTH_SHORT).show();
+                    validations++;
+                }
+
+                if (validations == 0) {
+                    Toast.makeText(EmailPasswordAuth.this, "Sign up correctly", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        if (target == null) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
+
 }
