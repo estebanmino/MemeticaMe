@@ -1,16 +1,28 @@
 package memeticame.memeticame.users;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.w3c.dom.Text;
 
+import memeticame.memeticame.MainActivity;
 import memeticame.memeticame.R;
+import memeticame.memeticame.models.Database;
 
 public class EmailPasswordAuth extends AppCompatActivity {
 
@@ -23,6 +35,10 @@ public class EmailPasswordAuth extends AppCompatActivity {
     private Button btnToSignIn;
     private TextView titleText;
 
+    private Database firebaseDatabase = new Database();
+    public FirebaseAuth mAuth;
+
+    private FirebaseUser currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +65,12 @@ public class EmailPasswordAuth extends AppCompatActivity {
         onClickBtnToSignIn();
         onClickBtnSignIn();
         onClickBtnSignUp();
+
+        firebaseDatabase.init();
+        mAuth = firebaseDatabase.mAuth;
+        currentUser = firebaseDatabase.mAuth.getCurrentUser();
+        //updateUI(currentUser);
+
     }
 
     private void onClickBtnToSignUp() {
@@ -98,7 +120,7 @@ public class EmailPasswordAuth extends AppCompatActivity {
                     validations++;
                 }
                 if (validations == 0) {
-                    Toast.makeText(EmailPasswordAuth.this, "Sign in correctly", Toast.LENGTH_SHORT).show();
+                    signInWithEmailAndPassword(email, password);
                 }
             }
         });
@@ -128,12 +150,57 @@ public class EmailPasswordAuth extends AppCompatActivity {
                 }
 
                 if (validations == 0) {
-                    Toast.makeText(EmailPasswordAuth.this, "Sign up correctly", Toast.LENGTH_SHORT).show();
+                    createUserWithEmailAndPassword(email, password, phone);
                 }
             }
         });
     }
 
+    private void createUserWithEmailAndPassword(String email, String password, String  phone) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("CUEAP", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            startActivity(MainActivity.getIntent(EmailPasswordAuth.this));
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("CUEAP", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(EmailPasswordAuth.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
+    private void signInWithEmailAndPassword(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("SIGNIN", "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            startActivity(MainActivity.getIntent(EmailPasswordAuth.this));
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("SIGNIN", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(EmailPasswordAuth.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+                    }
+                });
+    }
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {
             return false;
@@ -141,5 +208,8 @@ public class EmailPasswordAuth extends AppCompatActivity {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
     }
-
+    public static Intent getIntent(Context context) {
+        Intent intent = new Intent(context,EmailPasswordAuth.class);
+        return intent;
+    }
 }

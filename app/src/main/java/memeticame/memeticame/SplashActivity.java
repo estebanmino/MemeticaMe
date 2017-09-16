@@ -25,11 +25,12 @@ public class SplashActivity extends AppCompatActivity {
 
         Handler mHandler = new Handler();
         Runnable mRunnble = () -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                startActivity(MainActivity.getIntent(SplashActivity.this));
 
-                //PhoneAuthActivity.startIntent(SplashActivity.this);
-                Intent intent = new Intent(SplashActivity.this, EmailPasswordAuth.class);
-                startActivity(intent);
-
+            } else {
+                startActivity(EmailPasswordAuth.getIntent(SplashActivity.this));
+            }
             finish();
         };
 

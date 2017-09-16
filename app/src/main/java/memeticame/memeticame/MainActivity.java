@@ -142,4 +142,9 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    public static Intent getIntent(Context context) {
+        Intent intent = new Intent(context,MainActivity.class);
+        return intent;
+    }
 }

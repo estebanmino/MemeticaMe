@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import memeticame.memeticame.MainActivity;
 import memeticame.memeticame.R;
+import memeticame.memeticame.contacts.ContactsActivity;
 
 public class PhoneAuthActivity extends AppCompatActivity {
 
