@@ -80,7 +80,7 @@ public class ContactsActivity extends AppCompatActivity {
         ArrayList<Contact> myPhoneContacts = mPhone.getContacts();
         for (Contact contact: myPhoneContacts) {
             myPhoneContactsNumbers.add(contact.getPhone());
-            myPhoneContactsNames.add(contact.getName());
+            myPhoneContactsNames.add(contact.getEmail());
         }
         numberList.stream().filter(myPhoneContactsNumbers::contains).forEachOrdered(contact_number -> {
             int index = myPhoneContactsNumbers.indexOf(contact_number);

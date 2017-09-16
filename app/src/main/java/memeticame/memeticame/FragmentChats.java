@@ -3,7 +3,6 @@ package memeticame.memeticame;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,7 @@ public class FragmentChats extends Fragment {
         myPhoneContacts = mPhone.getContacts();
         for (Contact contact: myPhoneContacts) {
             myPhoneContactsNumbers.add(contact.getPhone());
-            myPhoneContactsNames.add(contact.getName());
+            myPhoneContactsNames.add(contact.getEmail());
         }
 
         arrayAdapter = new ChatsContactsAdapter(getActivity(), myPhoneChatsContacts, firebaseDatabase.mAuth);
@@ -86,7 +85,7 @@ public class FragmentChats extends Fragment {
                         String chatRoomUid = dataSnapshot.child(
                                 myPhoneChatsContacts.get(position).getPhone()).getValue().toString();
                         startActivity(ChatRoomActivity.getIntent(getActivity(),
-                                myPhoneChatsContacts.get(position).getName(),
+                                myPhoneChatsContacts.get(position).getEmail(),
                                 myPhoneChatsContacts.get(position).getPhone(),
                                 chatRoomUid));
                     }
@@ -126,7 +125,7 @@ public class FragmentChats extends Fragment {
                             }
                             else {
                                 Contact unknownContact = new Contact();
-                                unknownContact.setName(chat_number);
+                                unknownContact.setEmail(chat_number);
                                 unknownContact.setPhone(chat_number);
                                 myPhoneChatsContacts.add(unknownContact);
                             }

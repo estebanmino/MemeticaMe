@@ -68,7 +68,7 @@ public class ContactsAdapter extends BaseAdapter {
         final TextView contactName = convertView.findViewById(R.id.contact_name);
         final TextView contactPhone = convertView.findViewById(R.id.contact_phone);
 
-        final String elementName = arrayList.get(position).getName();
+        final String elementName = arrayList.get(position).getEmail();
         final String elementPhone = arrayList.get(position).getPhone();
 
         contactName.setText(elementName);

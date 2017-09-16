@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -60,7 +59,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle(chatContact.getName());
+            getSupportActionBar().setTitle(chatContact.getEmail());
         }
 
         listenSentMessage();
@@ -109,7 +108,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     public void setChatContact() {
         //set contact
-        chatContact.setName(getIntent().getStringExtra(KEY_USERNAME));
+        chatContact.setEmail(getIntent().getStringExtra(KEY_USERNAME));
         chatContact.setPhone(getIntent().getStringExtra(KEY_PHONE));
     }
 

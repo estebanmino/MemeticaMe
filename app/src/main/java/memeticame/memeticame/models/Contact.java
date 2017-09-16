@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Contact {
 
-    private String name;
+    private String email;
     private String phone;
     private String id;
     private HashMap<String, String> contacts = null;
@@ -17,8 +17,8 @@ public class Contact {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() {
+        return email;
     }
 
     public String getPhone() {
@@ -33,8 +33,8 @@ public class Contact {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPhone(String phone) {

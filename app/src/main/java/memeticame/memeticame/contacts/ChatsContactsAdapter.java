@@ -57,7 +57,7 @@ public class ChatsContactsAdapter extends BaseAdapter {
         final TextView contactName = convertView.findViewById(R.id.contact_name);
         final TextView lastMessage = convertView.findViewById(R.id.last_message);
 
-        final String elementName = arrayList.get(position).getName();
+        final String elementName = arrayList.get(position).getEmail();
 
         contactName.setText(elementName);
         lastMessage.setText("last message");
